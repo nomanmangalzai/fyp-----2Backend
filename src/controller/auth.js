@@ -1,5 +1,16 @@
 const express = require("express");
+const app = express();
 const res = require("express/lib/response");
+const session = require("express-session");
+const cookieParser = require("cookie-parser");
+app.use(cookieParser());
+app.use(
+  session({
+    secret: "secret",
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 const users = require("../models/auth");
 
 exports.signUp = async (req, res, next) => {
@@ -46,23 +57,19 @@ exports.signUp = async (req, res, next) => {
 exports.login = async (req, res, next) => {
   console.log("Congrats! The login API has been called.");
 
-  //write API destructed variables with first letter capital
-  const Email = req.body.email;
-  const Password = req.body.password;
+  const Email = req.body.Email;
+  console.log(Email);
+  const Password = req.body.Password;
+  console.log(req.sessionID);
+
   const checkEmail = await users.findOne({ email: Email });
   const checkPassword = await users.findOne({ password: Password });
-  if (!checkEmail) {
-    return res.status(403).json({
-      message: "Couldn't find your Nakamura Account.",
-    });
-  }
-  if (!checkPassword) {
-    return res.status(403).json({
-      message:
-        "Incorrect password. Try again or click Forgot password to reset it.",
-    });
-  }
+  console.log("checkEmail= " + checkEmail);
   if (checkEmail && checkPassword) {
+    const User = await users.findOne({ email: Email }, { _id: 0, __v: 0 });
+    console.log("user data = " + User);
+    req.session.user = User;
+    req.session.save();
     console.log("Nakamura user with correct email.");
     res.status(201).json({ message: "Congratualtions! You have logged in" });
   }
@@ -71,15 +78,51 @@ exports.login = async (req, res, next) => {
 exports.changePassword = async (req, res, next) => {
   console.log("The changePassword API has been hit.");
   try {
-    const { userId } = req.params;
-    const password = req.body.password;
-    const userPassword = await users.findByIdAndUpdate(
-      { _id: userId },
-      { password: password },
-      { new: true }
+    const { Email, oldPassword, newPassword } = req.body;
+    const user = await users.findOne({ email: Email });
+    if (!user) {
+      return res.status(400).send("user with given email doesn't exist");
+    }
+    const databasePassword = await users.findOne({ password: oldPassword });
+    if (!databasePassword) {
+      return res.status(400).send("old password does not match");
+    }
+    const updatePassowrd = await users.findOneAndUpdate(
+      { email: Email },
+      { password: newPassword }
     );
-    return res.status(200).json({ status: true, data: userPassword });
+    if (updatePassowrd) {
+      return res.status(200).send("The password has been updated");
+    }
+
+    // const userPassword = await users.findByIdAndUpdate(
+    //   { _id: userId },
+    //   { password: password },
+    //   { new: true }
+    // );
+    // return res.status(200).json({ status: true, data: userPassword });
   } catch (error) {
     return res.status(400).json({ status: false, error: "Error occured" });
   }
 };
+
+// exports.changePassword = async (req, res, next) => {
+//   console.log("The changePassword API has been hit.");
+//   try {
+//     const { customerID, oldPassword, newPassword } = req.body;
+//     console.log(customerID);
+
+//     // const oldPasswordFromDatabase = await users.findById({
+//     //   customerId: customerID,
+//     // });
+//     const userPassword = await users.findByIdAndUpdate(
+//       { _id: customerID },
+//       { password: newPassword },
+//       { new: true }
+//     );
+//     return res.status(200).json({ status: true, data: userPassword });
+//   } catch (error) {
+//     console.log(error);
+//     return res.status(400).json({ status: false, error: "Error occured" });
+//   }
+// };

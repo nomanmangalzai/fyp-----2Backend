@@ -82,13 +82,13 @@ exports.searchOrders = async (req, res, next) => {
   // const queryObject = {};
 
   // console.log(queryObject);
-  const totalPricee = req.params.key;
-  console.log(totalPricee);
+  // const totalPricee = req.params.key;
+  console.log(req.query);
 
-  const myData = await orderSchema.find({ totalPrice: totalPricee });
+  const myData = await orderSchema.find(req.query, { __v: 0 });
   res.status(200).json({
     status: "success",
-    results: myData.length,
+    NoOfresults: myData.length,
     data: {
       myData,
     },

@@ -5,9 +5,7 @@ const transactionSchema = mongoose.Schema({
   transactionId: {
     type: String,
     required: true,
-    index: {
-      unique: true,
-    },
+    unique: true,
   },
   status: {
     type: Boolean,

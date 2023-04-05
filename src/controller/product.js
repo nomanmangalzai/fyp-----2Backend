@@ -155,3 +155,34 @@ exports.deleteProduct = async (req, res, next) => {
     }
   });
 };
+
+exports.searchProducts = async (req, res, next) => {
+  console.log("The searchProducts API has been called.");
+  const searchedForItem = req.query;
+  console.log(searchedForItem);
+  const searchedForProduct = await ImageModel.find(req.query);
+  res.status(200).json({
+    status: "success",
+    NoOfresults: searchedForProduct.length,
+    data: {
+      searchedForProduct,
+    },
+  });
+};
+
+exports.filterProducts = async (req, res, next) => {
+  console.log("filterProducts API has been hit.");
+  const searchedForItem = req.query;
+  console.log(searchedForItem);
+  const searchedForProduct = await ImageModel.find(req.query, {
+    __v: 0,
+    _id: 0,
+  });
+  res.status(200).json({
+    status: "success",
+    NoOfresultsFiltered: searchedForProduct.length,
+    data: {
+      searchedForProduct,
+    },
+  });
+};
