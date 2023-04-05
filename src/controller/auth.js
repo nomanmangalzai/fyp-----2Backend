@@ -73,13 +73,13 @@ exports.login = async (req, res, next) => {
 
 exports.profile = async (req, res, next) => {
   console.log("profile API called");
-  jwt.verify(req.token, secretKey, (error, authData) => {
+  jwt.verify(req.token, secretKey, (error, userAuthenticationData) => {
     if (error) {
       res.send({ json: "invalid token", error });
     } else {
       res.json({
         message: "Profile Accessed",
-        authData,
+        userAuthenticationData,
       });
     }
   });
