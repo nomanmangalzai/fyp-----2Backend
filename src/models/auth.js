@@ -16,8 +16,8 @@ const users = mongoose.Schema({
     type: String,
     required: true,
   },
-  customerId: {
-    type: Number,
+  isAdmin: {
+    type: Boolean,
   },
 });
 

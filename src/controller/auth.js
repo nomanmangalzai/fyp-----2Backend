@@ -1,17 +1,10 @@
 const express = require("express");
 const app = express();
 const res = require("express/lib/response");
-const session = require("express-session");
-const cookieParser = require("cookie-parser");
-app.use(cookieParser());
-app.use(
-  session({
-    secret: "secret",
-    resave: false,
-    saveUninitialized: true,
-  })
-);
+const jwt = require("jsonwebtoken");
 const users = require("../models/auth");
+const secretKey = "secretKey";
+const verifyToken = require("./verifyToken");
 
 exports.signUp = async (req, res, next) => {
   console.log("The signup API has been called in mvc learning");
@@ -60,19 +53,36 @@ exports.login = async (req, res, next) => {
   const Email = req.body.Email;
   console.log(Email);
   const Password = req.body.Password;
-  console.log(req.sessionID);
 
   const checkEmail = await users.findOne({ email: Email });
   const checkPassword = await users.findOne({ password: Password });
-  console.log("checkEmail= " + checkEmail);
+
   if (checkEmail && checkPassword) {
-    const User = await users.findOne({ email: Email }, { _id: 0, __v: 0 });
-    console.log("user data = " + User);
-    req.session.user = User;
-    req.session.save();
-    console.log("Nakamura user with correct email.");
-    res.status(201).json({ message: "Congratualtions! You have logged in" });
+    const user = await users.findOne({ email: Email });
+    console.log(user);
+    jwt.sign({ user }, secretKey, { expiresIn: "2d" }, (error, token) => {
+      res.json({
+        token,
+        message: "You have logged in.",
+      });
+    });
+    // console.log("Nakamura user with correct email.");
+    // res.status(201).json({ message: "Congratualtions! You have logged in" });
   }
+};
+
+exports.profile = async (req, res, next) => {
+  console.log("profile API called");
+  jwt.verify(req.token, secretKey, (error, authData) => {
+    if (error) {
+      res.send({ json: "invalid token", error });
+    } else {
+      res.json({
+        message: "Profile Accessed",
+        authData,
+      });
+    }
+  });
 };
 
 exports.changePassword = async (req, res, next) => {
