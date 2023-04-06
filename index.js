@@ -5,6 +5,7 @@ require("./src/db/connection");
 app.use(bodyParser.json());
 app.get(express.json());
 const multer = require("multer");
+app.use(bodyParser.urlencoded({ extended: false }));
 //require("dotenv").config({ path: __dirname + "/.env" });
 
 //Below are files of routes folder.

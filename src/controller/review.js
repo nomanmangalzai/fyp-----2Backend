@@ -1,40 +1,53 @@
 const express = require("express");
 const res = require("express/lib/response");
 const review = require("../models/review");
+const jwt = require("jsonwebtoken");
+const secretKey = "secretKey";
+const verifyToken = require("./verifyToken");
 
 exports.postReview = async (req, res, next) => {
   console.log("The post Review API has been called.");
-  const { productName, customerName, Rating, Date } = req.body;
-  const idOfReview = req.body.reviewId;
-  console.log(Rating);
-  let deleteReviewId = req.params.id;
-  const checkDuplicateReview = await review.findOne({
-    reviewId: idOfReview,
+  jwt.verify(req.token, secretKey, (error, userAuthenticationData) => {
+    if (error) {
+      res.send({ json: "invalid token", error });
+    } else {
+      res.json({
+        message: "Profile Accessed",
+        userAuthenticationData,
+      });
+    }
   });
-  console.log(checkDuplicateReview);
+  // const { productName, customerName, Rating, Date } = req.body;
+  // const idOfReview = req.body.reviewId;
+  // console.log(Rating);
+  // let deleteReviewId = req.params.id;
+  // const checkDuplicateReview = await review.findOne({
+  //   reviewId: idOfReview,
+  // });
+  // console.log(checkDuplicateReview);
 
-  if (checkDuplicateReview) {
-    return res
-      .status(403)
-      .json({ message: "Review with this id already exists" });
-  }
+  // if (checkDuplicateReview) {
+  //   return res
+  //     .status(403)
+  //     .json({ message: "Review with this id already exists" });
+  // }
 
-  //   if ((customerId && productName && customerName && Rating && Date) === null) {
-  const newReview = new review({
-    reviewId: idOfReview,
-    productName: productName,
-    customerName: customerName,
-    Rating: Rating,
-    Date: Date,
-  });
-  console.log(newReview);
-  //below is saving
-  await newReview.save().then((result) => {
-    return res.status(201).json({
-      message: "The review has been successfully stored.",
-    });
-  });
-  //}
+  // //   if ((customerId && productName && customerName && Rating && Date) === null) {
+  // const newReview = new review({
+  //   reviewId: idOfReview,
+  //   productName: productName,
+  //   customerName: customerName,
+  //   Rating: Rating,
+  //   Date: Date,
+  // });
+  // console.log(newReview);
+  // //below is saving
+  // await newReview.save().then((result) => {
+  //   return res.status(201).json({
+  //     message: "The review has been successfully stored.",
+  //   });
+  // });
+  // //}
 };
 exports.viewReviews = async (req, res, next) => {
   console.log("view reviews api called.");

@@ -1,17 +1,14 @@
 const express = require("express");
 const app = express();
-const res = require("express/lib/response");
 const jwt = require("jsonwebtoken");
+const secret = require("./config").secret; //contains secret key used to sign tokens
+const res = require("express/lib/response");
 const users = require("../models/auth");
-const secretKey = "secretKey";
-const verifyToken = require("./verifyToken");
 
 exports.signUp = async (req, res, next) => {
   console.log("The signup API has been called in mvc learning");
-  const Email = req.body.email; //This "Email" spelling has to be different than of the schema when comparing the two values in find queries
-  const Password = req.body.password;
-  const ConfirmPassword = req.body.confirmPassword;
-  const CustomerId = req.body.customerId;
+  // const Email = req.body.email; //This "Email" spelling has to be different than of the schema when comparing the two values in find queries
+  const { fName, lName, Email, Password, ConfirmPassword, isAdmin } = req.body;
 
   const check = await users.findOne({ email: Email });
 
@@ -22,7 +19,7 @@ exports.signUp = async (req, res, next) => {
   }
   const passwordLength = Password.length;
   if (passwordLength < 6) {
-    res.status(201).json({
+    return res.status(201).json({
       message: "Password length must be equal to or greater than 6/ ",
     });
   }
@@ -32,17 +29,20 @@ exports.signUp = async (req, res, next) => {
       .status(201)
       .json({ message: "Password and confirm password does not match." });
   }
+
   const user = new users({
+    firstName: fName,
+    lastName: lName,
     email: Email,
     password: Password,
-    customerId: CustomerId,
+    isAdmin: isAdmin,
   });
 
-  await user.save().then((result) => {
-    res.status(201).json({
-      message: "Congratualtions! You have been successfully registered.",
-      //User: result,
-    });
+  // await user.save().then((user) => {
+  await user.save().then((user) => {
+    res
+      .status(201)
+      .json({ message: "You have been successfully registered", User: user });
   });
 };
 //exports.signUp = async (req, res, next) => {
@@ -51,7 +51,6 @@ exports.login = async (req, res, next) => {
   console.log("Congrats! The login API has been called.");
 
   const Email = req.body.Email;
-  console.log(Email);
   const Password = req.body.Password;
 
   const checkEmail = await users.findOne({ email: Email });
@@ -59,80 +58,53 @@ exports.login = async (req, res, next) => {
 
   if (checkEmail && checkPassword) {
     const user = await users.findOne({ email: Email });
-    console.log(user);
-    jwt.sign({ user }, secretKey, { expiresIn: "2d" }, (error, token) => {
-      res.json({
-        token,
-        message: "You have logged in.",
+    users.findOne({ email: Email }, function (err, user) {
+      if (err) return res.status(500).send("Error on the server.");
+      if (!user) return res.status(404).send("Invalid Credentials");
+
+      const passwordIsValid = checkPassword;
+      if (!passwordIsValid)
+        return res
+          .status(401)
+          .send({ auth: false, token: null, msg: "Invalid Credentials" });
+
+      const token = jwt.sign({ id: user._id }, secret, {
+        expiresIn: 86400, // expires in 24 hours
+      });
+
+      res.status(200).send({
+        auth: true,
+        token: token,
+        message: "You have successfully logged in",
       });
     });
     // console.log("Nakamura user with correct email.");
-    // res.status(201).json({ message: "Congratualtions! You have logged in" });
+    // res.status(201).json({ message: "No token found for the user" });
   }
-};
-
-exports.profile = async (req, res, next) => {
-  console.log("profile API called");
-  jwt.verify(req.token, secretKey, (error, userAuthenticationData) => {
-    if (error) {
-      res.send({ json: "invalid token", error });
-    } else {
-      res.json({
-        message: "Profile Accessed",
-        userAuthenticationData,
-      });
-    }
-  });
 };
 
 exports.changePassword = async (req, res, next) => {
   console.log("The changePassword API has been hit.");
   try {
     const { Email, oldPassword, newPassword } = req.body;
-    const user = await users.findOne({ email: Email });
-    if (!user) {
-      return res.status(400).send("user with given email doesn't exist");
-    }
-    const databasePassword = await users.findOne({ password: oldPassword });
-    if (!databasePassword) {
-      return res.status(400).send("old password does not match");
-    }
-    const updatePassowrd = await users.findOneAndUpdate(
-      { email: Email },
-      { password: newPassword }
-    );
-    if (updatePassowrd) {
-      return res.status(200).send("The password has been updated");
-    }
 
-    // const userPassword = await users.findByIdAndUpdate(
-    //   { _id: userId },
-    //   { password: password },
-    //   { new: true }
-    // );
-    // return res.status(200).json({ status: true, data: userPassword });
+    // const oldPasswordFromDatabase = await users.findById({
+    //   customerId: customerID,
+    // });
+    if (oldPassword === newPassword) {
+      return res.status(400).json({
+        status: false,
+        error: "Enter a new password you did not use before",
+      });
+    }
+    const userPassword = await users.findOneAndUpdate(
+      { email: Email },
+      { password: newPassword },
+      { new: true }
+    );
+    return res.status(200).json({ status: true, data: userPassword });
   } catch (error) {
+    console.log(error);
     return res.status(400).json({ status: false, error: "Error occured" });
   }
 };
-
-// exports.changePassword = async (req, res, next) => {
-//   console.log("The changePassword API has been hit.");
-//   try {
-//     const { customerID, oldPassword, newPassword } = req.body;
-//     console.log(customerID);
-
-//     // const oldPasswordFromDatabase = await users.findById({
-//     //   customerId: customerID,
-//     // });
-//     const userPassword = await users.findByIdAndUpdate(
-//       { _id: customerID },
-//       { password: newPassword },
-//       { new: true }
-//     );
-//     return res.status(200).json({ status: true, data: userPassword });
-//   } catch (error) {
-//     console.log(error);
-//     return res.status(400).json({ status: false, error: "Error occured" });
-//   }
-// };

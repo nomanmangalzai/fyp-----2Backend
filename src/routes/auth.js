@@ -1,11 +1,16 @@
 const express = require("express");
 const authController = require("../controller/auth");
 const router = express.Router();
-const verifyToken = require("../controller/verifyToken");
+const verifyToken = require("../controller/verifyToken"); // import verifyToken file
+const isAuthorized = require("../controller/isAuthorized");
 
 router.post("/signup", authController.signUp);
 router.post("/login", authController.login);
-router.put("/changePassword", authController.changePassword);
-router.post("/profile", verifyToken, authController.profile);
+router.put(
+  "/changePassword",
+  verifyToken,
+  isAuthorized,
+  authController.changePassword
+);
 
 module.exports = router;

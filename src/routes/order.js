@@ -1,8 +1,21 @@
 const express = require("express");
 const orderControler = require("../controller/order");
 const router = express.Router();
-router.get("/viewOrders", orderControler.viewOrders);
-router.post("/postOrder", orderControler.postOrder);
-router.delete("/deleteOrder/:id", orderControler.deleteOrder);
-router.get("/searchOrders", orderControler.searchOrders);
+const verifyToken = require("../controller/verifyToken"); // import verifyToken file
+const isAuthorized = require("../controller/isAuthorized");
+
+router.get("/viewOrders", verifyToken, isAuthorized, orderControler.viewOrders);
+router.post("/postOrder", verifyToken, isAuthorized, orderControler.postOrder);
+router.delete(
+  "/deleteOrder/:id",
+  verifyToken,
+  isAuthorized,
+  orderControler.deleteOrder
+);
+router.get(
+  "/searchOrders",
+  verifyToken,
+  isAuthorized,
+  orderControler.searchOrders
+);
 module.exports = router;

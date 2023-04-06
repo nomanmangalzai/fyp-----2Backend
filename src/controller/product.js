@@ -11,19 +11,6 @@ const ImageModel = require("../models/product");
 
 exports.postProduct = async (req, res, next) => {
   console.log("The uploadProduct API has been called.");
-  const check = req.body.productTitle;
-  // console.log(check);
-  // const checkEmail = await users.findOne({ email: Email });
-  const checkProduct = await ImageModel.findOne({ productTitle: check });
-  console.log("checkProduct = " + checkProduct);
-  // if (checkProduct) {
-  //   //await ImageModel.deleteMany({ productTitle: "coke" }); //this code is for deleteing
-  //   // records of database
-  //   return res.status(403).json({
-  //     message: "Product with the same name already exists.",
-  //   });
-  // }
-
   //Storage
   const Storage = multer.diskStorage({
     destination: "uploads",
@@ -37,32 +24,50 @@ exports.postProduct = async (req, res, next) => {
     storage: Storage,
   }).single("testImage");
 
-  upload(req, res, (err) => {
+  upload(req, res, async (err) => {
     if (err) {
       console.log(err);
     } else {
-      const newImage = new ImageModel({
+      const checkProduct = await ImageModel.findOne({
         productTitle: req.body.productTitle,
-        SKU: req.body.SKU,
-        color: req.body.color,
-        size: req.body.size,
-        price: req.body.price,
-        status: req.body.status,
-        tag: req.body.status,
-        description: req.body.description,
-        category: req.body.category,
-        subcategory: req.body.subcategory,
-        image: {
-          data: req.file.filename,
-          contentType: "image/png",
-        },
       });
-      newImage
-        .save()
-        .then(() =>
-          res.send("The product description has been successfully updated..")
-        )
-        .catch((err) => console.log(err));
+      if (checkProduct) {
+        //await ImageModel.deleteMany({ productTitle: "coke" }); //this code is for deleteing
+        // records of database
+        return res.status(403).json({
+          message: "Product with the same name already exists.",
+        });
+      } else {
+        console.log(titleOfProduct);
+        const newImage = new ImageModel({
+          productTitle: req.body.productTitle,
+          SKU: req.body.SKU,
+          color: req.body.color,
+          size: req.body.size,
+          price: req.body.price,
+          status: req.body.status,
+          tag: req.body.tag,
+          description: req.body.description,
+          quantity: req.body.quantity,
+          category: req.body.category,
+          subcategory: req.body.subcategory,
+          image: {
+            data: req.file.filename,
+            contentType: "image/png",
+          },
+        });
+        newImage
+          .save()
+          .then(() =>
+            res.send("The product description has been successfully uploaded..")
+          )
+          .catch((err) => {
+            console.log(err);
+            {
+              return res.send(err);
+            }
+          });
+      }
     }
   });
 };

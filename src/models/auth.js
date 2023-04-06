@@ -1,23 +1,26 @@
 const mongoose = require("mongoose");
 //making a schema/top-row
 const users = mongoose.Schema({
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  name: {
+  firstName: {
     type: String,
   },
   lastName: {
     type: String,
   },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+
   password: {
     type: String,
     required: true,
   },
   isAdmin: {
     type: Boolean,
+    required: true,
+    default: "false",
   },
 });
 
