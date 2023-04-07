@@ -3,6 +3,7 @@ const authController = require("../controller/auth");
 const router = express.Router();
 const verifyToken = require("../controller/verifyToken"); // import verifyToken file
 const isAuthorized = require("../controller/isAuthorized");
+const isAdmin = require("../controller/isAdmin");
 
 router.post("/signup", authController.signUp);
 router.post("/login", authController.login);
