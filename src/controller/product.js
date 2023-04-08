@@ -43,7 +43,7 @@ exports.postProduct = async (req, res, next) => {
           productTitle: req.body.productTitle,
           SKU: req.body.SKU,
           color: req.body.color,
-          size: req.body.size,
+          // size: req.body.size,
           price: req.body.price,
           status: req.body.status,
           tag: req.body.tag,
@@ -64,7 +64,7 @@ exports.postProduct = async (req, res, next) => {
           .catch((err) => {
             console.log(err);
             {
-              return res.send(err);
+              return res.send("Error while uploading product" + err);
             }
           });
       }
