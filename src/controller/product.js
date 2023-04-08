@@ -64,7 +64,7 @@ exports.postProduct = async (req, res, next) => {
           .catch((err) => {
             console.log(err);
             {
-              return res.send("Error while uploading product" + err);
+              return res.send("Error while uploading the product" + err);
             }
           });
       }
