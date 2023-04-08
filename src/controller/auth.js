@@ -8,33 +8,34 @@ const users = require("../models/auth");
 exports.signUp = async (req, res, next) => {
   console.log("The signup API has been called in mvc learning");
   // const Email = req.body.email; //This "Email" spelling has to be different than of the schema when comparing the two values in find queries
-  const { fName, lName, Email, Password, ConfirmPassword, isAdmin } = req.body;
+  const { firstName, lastName, email, password, confirmPassword, isAdmin } =
+    req.body;
 
-  const check = await users.findOne({ email: Email });
+  const check = await users.findOne({ email: email });
 
   if (check) {
     return res
       .status(403)
       .json({ message: "User with this email already exists." });
   }
-  const passwordLength = Password.length;
+  const passwordLength = password.length;
   if (passwordLength < 6) {
     return res.status(201).json({
       message: "Password length must be equal to or greater than 6/ ",
     });
   }
 
-  if (Password != ConfirmPassword) {
+  if (password != confirmPassword) {
     return res
       .status(201)
       .json({ message: "Password and confirm password does not match." });
   }
 
   const user = new users({
-    firstName: fName,
-    lastName: lName,
-    email: Email,
-    password: Password,
+    firstName: firstName,
+    lastName: lastName,
+    email: email,
+    password: password,
     isAdmin: isAdmin,
   });
 

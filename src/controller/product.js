@@ -75,8 +75,8 @@ exports.viewProducts = async (req, res, next) => {
   console.log("The view products API has been hit");
   try {
     const results = await ImageModel.find(
-      {},
-      { productTitle: 1, SKU: 1, category: 1, price: 1, status: 1 }
+      {}
+      // { productTitle: 1, SKU: 1, category: 1, price: 1, status: 1 }
     );
     res.send(results);
   } catch (error) {
