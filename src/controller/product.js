@@ -146,19 +146,37 @@ exports.updateProduct = async (req, res, next) => {
 exports.deleteProduct = async (req, res, next) => {
   console.log("The delete product API has been hit.");
   let deleteId = req.params.id;
-  ImageModel.findOneAndDelete({ SKU: deleteId }, function (err, docs) {
-    if (err) {
-      res.send("Error! You have entered wrong key.");
-    } else {
-      if (docs === null) {
-        res.send("Wrong ID");
+  // ImageModel.findOneAndDelete({ SKU: deleteId }, function (err, docs) {
+  //   if (err) {
+  //     res.send("Error! You have entered wrong key.");
+  //   } else {
+  //     if (docs === null) {
+  //       res.send("Wrong ID");
+  //     } else {
+  //       res.send(
+  //         "The requested record with SKU = " + deleteId + " has been deleted"
+  //       );
+  //     }
+  //   }
+  // });
+
+  try {
+    ImageModel.findOneAndDelete({ SKU: deleteId }, function (err, docs) {
+      if (err) {
+        res.send("Error! You have entered wrong key type.");
       } else {
-        res.send(
-          "The requested record with SKU = " + deleteId + " has been deleted"
-        );
+        if (docs === null) {
+          res.send("Wrong ID");
+        } else {
+          res.send(
+            "The requested record with SKU = " + deleteId + " has been deleted"
+          );
+        }
       }
-    }
-  });
+    });
+  } catch (error) {
+    console.log("Could not delete the product." + error);
+  }
 };
 
 exports.searchProducts = async (req, res, next) => {
