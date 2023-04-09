@@ -11,6 +11,7 @@ const ImageModel = require("../models/product");
 
 exports.postProduct = async (req, res, next) => {
   console.log("The uploadProduct API has been called.");
+  // console.log(req.file.filename)
   //Storage
   const Storage = multer.diskStorage({
     destination: "uploads",
@@ -28,7 +29,7 @@ exports.postProduct = async (req, res, next) => {
     if (err) {
       console.log(err);
     } else {
-      const checkProduct = await ImageModel.findOne({
+      const checkProduct = await ImageModel.findOne({ 
         productTitle: req.body.productTitle,
       });
       if (checkProduct) {
@@ -38,7 +39,7 @@ exports.postProduct = async (req, res, next) => {
           message: "Product with the same name already exists.",
         });
       } else {
-        console.log(titleOfProduct);
+        // console.log(titleOfProduct);
         const newImage = new ImageModel({
           productTitle: req.body.productTitle,
           SKU: req.body.SKU,
@@ -91,6 +92,7 @@ exports.updateProduct = async (req, res, next) => {
 
   //write update api code from United Top Tech
   let updatedId = req.params.id;
+  console.log(updatedId)
   //Storage;
   const Storage = multer.diskStorage({
     destination: "uploads",
@@ -115,9 +117,9 @@ exports.updateProduct = async (req, res, next) => {
         {
           $set: {
             productTitle: req.body.productTitle,
-            SKU: updatedId,
+            // SKU: updatedId,
             color: req.body.color,
-            size: req.body.size,
+            // size: req.body.size,
             price: req.body.price,
             status: req.body.status,
             tag: req.body.status,

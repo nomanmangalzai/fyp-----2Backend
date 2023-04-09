@@ -7,23 +7,23 @@ const isAdmin = require("../controller/isAdmin");
 
 router.get(
   "/viewOrders",
-  verifyToken,
-  isAuthorized,
-  isAdmin,
+  // verifyToken,
+  // isAuthorized,
+  // isAdmin,
   orderControler.viewOrders
 );
 router.post(
   "/postOrder",
-  verifyToken,
-  isAuthorized,
-  isAdmin,
+  // verifyToken,
+  // isAuthorized,
+  // isAdmin,
   orderControler.postOrder
 );
 router.delete(
   "/deleteOrder/:id",
-  verifyToken,
-  isAuthorized,
-  isAdmin,
+  // verifyToken,
+  // isAuthorized,
+  // isAdmin,
   orderControler.deleteOrder
 );
 router.get(

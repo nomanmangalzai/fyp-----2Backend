@@ -13,7 +13,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 //require("dotenv").config({ path: __dirname + "/.env" });
 
 //Below are files of routes folder.
-const autRoute = require("./src/routes/auth");
+const autRoute = require("./src/routes/auth"); 
 const productRoute = require("./src/routes/product");
 const orderListRoute = require("./src/routes/order");
 const customerList = require("./src/routes/customerList");

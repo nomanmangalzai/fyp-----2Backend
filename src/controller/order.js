@@ -5,24 +5,24 @@ const orderSchema = require("../models/order");
 
 exports.postOrder = async (req, res, next) => {
   console.log("Congrats! The postOrder API has been hit.");
-  const { orderid, customername, phoneno, totalprice, statuss, datee } =
+  const { orderId, customerName, phoneNo, totalPrice, status, date } =
     req.body;
-  console.log(orderid);
-  console.log(statuss);
+  console.log(orderId);
+  console.log(status);
 
   const checkForDuplicay = await orderSchema.findOne({
-    orderId: orderid,
+    orderId: orderId,
   });
   if (checkForDuplicay) {
     return res.status(403).json({ message: "Please Enter a unique orderId" });
   }
   const order = new orderSchema({
-    orderId: orderid,
-    customerName: customername,
-    phoneNo: phoneno,
-    totalPrice: totalprice,
-    status: statuss,
-    date: datee,
+    orderId: orderId,
+    customerName: customerName,
+    phoneNo: phoneNo,
+    totalPrice: totalPrice,
+    status: status,
+    date: date,
   });
 
   //save the record ="order" in database
@@ -36,16 +36,18 @@ exports.postOrder = async (req, res, next) => {
 
 exports.deleteOrder = async (req, res, next) => {
   console.log("Congratulation! The delete order API has been called");
-  const { orderid } = req.body;
-  console.log("orderid = " + orderid);
-  orderSchema.findOneAndDelete({ orderId: orderid }, function (error, docs) {
+  const orderId = req.params.id;
+  // const OID = orderId
+  console.log("orderid = " + orderId);
+  orderSchema.findOneAndDelete({ orderId: orderId }, function (error, docs) {
+
     if (error) {
       res.send("Error occured.");
     } else {
       if (docs === null) {
         res.send("Wrong ID! No product with this id in the database");
       } else {
-        res.send("The order with id = " + orderid + " has been deleted.");
+        res.send("The order with id = " + orderId + " has been deleted.");
         console.log("data = " + docs);
       }
     }

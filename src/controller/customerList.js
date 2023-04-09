@@ -5,7 +5,7 @@ const users = require("../models/auth");
 exports.viewAllCustomers = async (req, res, next) => {
   console.log("Mubarak! The viewAllCustomers API has been hit.");
   try {
-    const allCustomers = await users.find({}, { password: 0, __v: 0, _id: 0 });
+    const allCustomers = await users.find({}, { password: 0, __v: 0});
     res.send(allCustomers);
   } catch (error) {
     console.log("Couldn't show users." + error.message);

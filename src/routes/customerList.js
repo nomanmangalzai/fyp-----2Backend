@@ -7,16 +7,16 @@ const isAdmin = require("../controller/isAdmin");
 
 router.get(
   "/viewAllCustomers",
-  verifyToken,
-  isAuthorized,
-  isAdmin,
+  // verifyToken,
+  // isAuthorized,
+  // isAdmin,
   customerListController.viewAllCustomers
 );
-router.get(
+router.delete(
   "/deleteCustomer/:id",
-  verifyToken,
-  isAuthorized,
-  isAdmin,
+  // verifyToken,
+  // isAuthorized,
+  // isAdmin,
   customerListController.deleteCustomer
 );
 
