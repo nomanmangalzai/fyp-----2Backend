@@ -12,6 +12,7 @@ const isAdmin = (req, res, next) => {
         .send("You must have an account to make this request.");
     if (user.email !== acceptedEmail)
       return res.status(401).send("You are not Authorizes.");
+    //check sub-branch
     req.email = user.email;
     next();
   });
