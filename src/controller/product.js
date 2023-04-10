@@ -13,6 +13,7 @@ exports.postProduct = async (req, res, next) => {
   console.log("The uploadProduct API has been called.");
   mongoose.Schema.Types.Boolean.convertToTrue.add("Active");
   mongoose.Schema.Types.Boolean.convertToFalse.add("Deactive");
+  console.log("Let's check github desktop");
 
   //Storage
   const Storage = multer.diskStorage({
