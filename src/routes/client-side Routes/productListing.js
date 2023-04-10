@@ -8,5 +8,6 @@ const isAdmin = require("../../controller/isAdmin");
 // router.post("/showProducts", productListingController.showProducts);
 router.get("/showproducts", productListingController.showProducts);
 router.get("/shopbycategories", productListingController.shopByCategories);
+router.post("/addtocart", productListingController.addToCart);
 
 module.exports = router;
