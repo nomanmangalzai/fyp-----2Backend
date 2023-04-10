@@ -48,3 +48,7 @@ exports.shopByCategories = async (req, res, next) => {
       .json({ status: "failed", message: "Could not filter products" });
   }
 };
+
+exports.addToCart = async (req, res, next) => {
+  console.log("ADD TO CART API has been called");
+};

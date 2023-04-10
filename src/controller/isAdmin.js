@@ -11,7 +11,7 @@ const isAdmin = (req, res, next) => {
         .status(404)
         .send("You must have an account to make this request.");
     if (user.email !== acceptedEmail)
-      return res.status(401).send("You are not admin.");
+      return res.status(401).send("You are not Authorizes.");
     req.email = user.email;
     next();
   });

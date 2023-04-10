@@ -72,6 +72,10 @@ exports.login = async (req, res, next) => {
       const token = jwt.sign({ id: user._id }, secret, {
         expiresIn: 86400, // expires in 24 hours
       });
+      //We can send email and other information in token as well.
+      // const token = jwt.sign({ id: user._id, email: email}, secret, {
+      //   expiresIn: 86400, // expires in 24 hours
+      // });
 
       res.status(200).send({
         auth: true,
