@@ -19,9 +19,13 @@ const transactionSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  phoneNo: {
+    type: String, // save phone number with strings to allow + and -.
+    required: true,
+  },
   date: {
     type: Date,
-    // default: Date.now,
+    default: Date.now,
   },
 });
 module.exports = transaction = mongoose.model("Transaction", transactionSchema);

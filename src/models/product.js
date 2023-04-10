@@ -39,6 +39,11 @@ const ImageSchema = mongoose.Schema({
     type: Number,
     required: true,
   },
+  date: {
+    type: Date,
+    default: Date.now,
+    required: true,
+  },
   category: {
     type: String,
     required: true,

@@ -11,7 +11,9 @@ const ImageModel = require("../models/product");
 
 exports.postProduct = async (req, res, next) => {
   console.log("The uploadProduct API has been called.");
-  // console.log(req.file.filename)
+  mongoose.Schema.Types.Boolean.convertToTrue.add("Active");
+  mongoose.Schema.Types.Boolean.convertToFalse.add("Deactive");
+
   //Storage
   const Storage = multer.diskStorage({
     destination: "uploads",
@@ -26,10 +28,14 @@ exports.postProduct = async (req, res, next) => {
   }).single("testImage");
 
   upload(req, res, async (err) => {
+    if (await ImageModel.findOne({ SKU: req.body.SKU })) {
+      return res.send("The sku should be a unique value");
+    }
+
     if (err) {
       console.log(err);
     } else {
-      const checkProduct = await ImageModel.findOne({ 
+      const checkProduct = await ImageModel.findOne({
         productTitle: req.body.productTitle,
       });
       if (checkProduct) {
@@ -39,19 +45,20 @@ exports.postProduct = async (req, res, next) => {
           message: "Product with the same name already exists.",
         });
       } else {
-        // console.log(titleOfProduct);
+        console.log(req.body.status);
         const newImage = new ImageModel({
           productTitle: req.body.productTitle,
           SKU: req.body.SKU,
           color: req.body.color,
-          // size: req.body.size,
           price: req.body.price,
           status: req.body.status,
           tag: req.body.tag,
           description: req.body.description,
           quantity: req.body.quantity,
+          date: req.body.date,
           category: req.body.category,
           subcategory: req.body.subcategory,
+          // image: req.body.testImage,
           image: {
             data: req.file.filename,
             contentType: "image/png",
@@ -59,8 +66,11 @@ exports.postProduct = async (req, res, next) => {
         });
         newImage
           .save()
-          .then(() =>
-            res.send("The product description has been successfully uploaded..")
+          .then((product) =>
+            res.send(
+              "The product description has been successfully uploaded.." +
+                product
+            )
           )
           .catch((err) => {
             console.log(err);
@@ -87,12 +97,18 @@ exports.viewProducts = async (req, res, next) => {
 
 exports.updateProduct = async (req, res, next) => {
   console.log("UpdateProduct API has been hit.");
+  // mongoose.Schema.Types.Boolean.convertToFalse.add("Deactive");
+  // mongoose.Schema.Types.Boolean.convertToTrue.add("Active");
+
+  // console.log(req.body.productTitle);
 
   // res.send({ result: "update" });
 
   //write update api code from United Top Tech
-  let updatedId = req.params.id;
-  console.log(updatedId)
+  // let updatedId = req.params.id;
+  let deleteId = req.params.id;
+
+  console.log("deleteId = " + deleteId);
   //Storage;
   const Storage = multer.diskStorage({
     destination: "uploads",
@@ -108,28 +124,43 @@ exports.updateProduct = async (req, res, next) => {
     storage: Storage,
   }).single("testImage");
 
-  upload(req, res, (err) => {
+  upload(req, res, async (err) => {
+    // console.log(req.body);
     if (err) {
       console.log(err);
     } else {
+      console.log(req.body.productTitle);
+
       ImageModel.findOneAndUpdate(
-        { SKU: updatedId },
+        { SKU: deleteId },
         {
+          // $set: req.body,
           $set: {
             productTitle: req.body.productTitle,
-            // SKU: updatedId,
             color: req.body.color,
-            // size: req.body.size,
+            // SKU: req.body.SKU,
             price: req.body.price,
             status: req.body.status,
             tag: req.body.status,
             description: req.body.description,
+            quantity: req.body.quantity,
+            date: req.body.date,
             category: req.body.category,
             subcategory: req.body.subcategory,
             image: {
               data: req.file.filename,
               contentType: "image/png",
             },
+            // image: req.body.testImage,
+            // image: {
+            //   data: req.file.filename,
+            //   contentType: "image/png",
+            // },
+            // image: {
+            //   data: req.file.filename,
+            //   contentType: "image/png",
+            // },
+            // testImage: req.file.finename,
           },
         },
         { new: true },
@@ -137,7 +168,7 @@ exports.updateProduct = async (req, res, next) => {
           if (data === null) {
             res.send("No data found");
           } else {
-            res.send("Congratulation: Data updated");
+            res.send("Congratulation: Data updated. updatedProduct = " + data);
           }
         }
       );
