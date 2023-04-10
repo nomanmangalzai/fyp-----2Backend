@@ -8,11 +8,12 @@ const multer = require("multer");
 const ImageModel = require("../models/product");
 
 // const product = require("../models/product");
+mongoose.Schema.Types.Boolean.convertToTrue.add("Active");
+mongoose.Schema.Types.Boolean.convertToFalse.add("Deactive");
 
 exports.postProduct = async (req, res, next) => {
   console.log("The uploadProduct API has been called.");
-  mongoose.Schema.Types.Boolean.convertToTrue.add("Active");
-  mongoose.Schema.Types.Boolean.convertToFalse.add("Deactive");
+
   console.log("Let's check github desktop");
 
   //Storage
@@ -30,9 +31,13 @@ exports.postProduct = async (req, res, next) => {
 
   upload(req, res, async (err) => {
     if (await ImageModel.findOne({ SKU: req.body.SKU })) {
-      return res.send("The sku should be a unique value");
+      return res
+        .status(403)
+        .json({ message: "The sku should be a unique value" });
     }
-
+    if (req.body.price <= 0) {
+      return res.status(403).json({ message: "The price should be positive" });
+    }
     if (err) {
       console.log(err);
     } else {

@@ -42,7 +42,7 @@ const ImageSchema = mongoose.Schema({
   date: {
     type: Date,
     default: Date.now,
-    required: true,
+    // required: true,
   },
   category: {
     type: String,

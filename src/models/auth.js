@@ -17,6 +17,12 @@ const users = mongoose.Schema({
     type: String,
     required: true,
   },
+  phoneNo: {
+    type: String,
+  },
+  Address: {
+    type: String,
+  },
   isAdmin: {
     type: Boolean,
     required: true,

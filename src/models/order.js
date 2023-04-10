@@ -27,7 +27,7 @@ const orderShema = mongoose.Schema({
   date: {
     type: Date,
     default: Date.now,
-    required: true,
+    // required: true,
   },
 });
 module.exports = orderModel = mongoose.model("customersOrders", orderShema);

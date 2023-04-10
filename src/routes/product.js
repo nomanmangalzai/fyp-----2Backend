@@ -21,9 +21,9 @@ router.get(
 );
 router.delete(
   "/deleteProduct/:id",
-  verifyToken,
-  isAuthorized,
-  isAdmin,
+  // verifyToken,
+  // isAuthorized,
+  // isAdmin,
   productController.deleteProduct
 );
 router.put(
