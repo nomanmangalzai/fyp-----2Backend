@@ -5,6 +5,7 @@ const secret = require("./config").secret; //contains secret key used to sign to
 const res = require("express/lib/response");
 const users = require("../models/auth");
 var validator = require("node-email-validation");
+const bcrypt = require("bcrypt");
 
 exports.signUp = async (req, res, next) => {
   console.log("The signup API has been called in mvc learning");
@@ -37,11 +38,14 @@ exports.signUp = async (req, res, next) => {
       .json({ message: "Password and confirm password does not match." });
   }
 
+  //hash the password
+  const hash = await bcrypt.hash(password, 10);
+
   const user = new users({
     firstName: firstName,
     lastName: lastName,
     email: email,
-    password: password,
+    password: hash,
     isAdmin: isAdmin,
   });
 
