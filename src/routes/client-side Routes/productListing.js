@@ -6,8 +6,8 @@ const isAuthorized = require("../../controller/isAuthorized");
 const isAdmin = require("../../controller/isAdmin");
 
 // router.post("/showProducts", productListingController.showProducts);
-router.get("/showproducts", productListingController.showProducts);
-router.get("/shopbycategories", productListingController.shopByCategories);
-router.post("/addtocart", productListingController.addToCart);
-
+router.get("/show-products", productListingController.showProducts);
+router.get("/shop-by-categories", productListingController.shopByCategories);
+router.post("/add-to-cart", productListingController.addToCart);
+router.put("/update-quantity", productListingController.updateQuantity);
 module.exports = router;

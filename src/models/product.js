@@ -9,7 +9,7 @@ const ImageSchema = mongoose.Schema({
   SKU: {
     type: Number,
     unique: true,
-    required: true,
+    required: [true, "Please Include the product price"],
   },
   color: {
     type: String,
