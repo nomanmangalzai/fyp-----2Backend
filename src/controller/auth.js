@@ -65,15 +65,22 @@ exports.login = async (req, res, next) => {
   const Password = req.body.Password;
 
   const checkEmail = await users.findOne({ email: Email });
-  const checkPassword = await users.findOne({ password: Password });
+  const checkUser = await users.findOne({ email: Email });
+  const hash = checkUser.password;
+  const compareHashedPassword = await bcrypt.compare(Password, hash);
+  console.log("hashing is = " + compareHashedPassword);
 
-  if (checkEmail && checkPassword) {
+  // const checkPassword = await users.findOne({
+  //   password: compareHashedPassword,
+  // });
+
+  if (checkEmail && compareHashedPassword) {
     const user = await users.findOne({ email: Email });
     users.findOne({ email: Email }, function (err, user) {
       if (err) return res.status(500).send("Error on the server.");
       if (!user) return res.status(404).send("Invalid Credentials");
 
-      const passwordIsValid = checkPassword;
+      const passwordIsValid = compareHashedPassword;
       if (!passwordIsValid)
         return res
           .status(401)
