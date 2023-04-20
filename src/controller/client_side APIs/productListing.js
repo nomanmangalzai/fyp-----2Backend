@@ -6,6 +6,10 @@ const secret = require("../config").secret; //contains secret key used to sign t
 
 const res = require("express/lib/response");
 const ImageModel = require("../../models/product");
+const shoppingCart = require("../../models/client-side Schemas/shoppingCart");
+const product = require("../../models/product");
+
+// 400 = the server cannot or will not process the request due to something that is perceived to be a client error
 
 exports.showProducts = async (req, res, next) => {
   console.log("The show products API has been called");
@@ -50,5 +54,70 @@ exports.shopByCategories = async (req, res, next) => {
 };
 
 exports.addToCart = async (req, res, next) => {
-  console.log("ADD TO CART API has been called");
+  const { productId } = req.body;
+  const quantity = Number.parseInt(req.body.quantity);
+  const {
+    productName,
+    productPrice,
+    productQuantity,
+    cartTotal,
+    additionalComments,
+    deliveryDateAndTime,
+  } = req.body;
+  if (await shoppingCart.findOne({ productName: productName })) {
+    return res.status(400).send("This product is already added");
+  }
+  console.log("Shopping Cart API Called");
+
+  try {
+    const userCart = new shoppingCart({
+      productName: productName,
+      productPrice: productPrice,
+      productQuantity: productQuantity,
+      cartTotal: cartTotal,
+      additionalComments: additionalComments,
+      deliveryDateAndTime: deliveryDateAndTime,
+    });
+    // await user.save().then((user) => {
+    await userCart.save().then((userCart) => {
+      res
+        .status(201)
+        .json({ message: "Product added to cart", userCart: userCart });
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json("Error occured while adding to cart");
+  }
+};
+
+exports.updateQuantity = async (req, res, next) => {
+  console.log("Update quantity API's been called");
+  const { id, productQuantity } = req.body;
+  console.log();
+  try {
+    if (id !== "null") {
+      const updatedShoppingCartProduct = await shoppingCart.findByIdAndUpdate(
+        id,
+        { productQuantity: productQuantity }
+      );
+
+      return res.status(200).json({
+        message: "Quantity updated",
+        status: true,
+        // data: userPassword,
+      });
+
+      // updatedShoppingCartProduct.save().then((updatedShoppingCartProduct) => {
+      //   return res.status(200).json({
+      //     message: "Product quantity updated",
+      //     updateProduct: updatedShoppingCartProduct,
+      //   });
+      // });
+    }
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(400)
+      .json({ message: "could not update the product's quantity" });
+  }
 };

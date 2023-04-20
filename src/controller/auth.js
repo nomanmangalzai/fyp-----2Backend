@@ -4,13 +4,19 @@ const jwt = require("jsonwebtoken");
 const secret = require("./config").secret; //contains secret key used to sign tokens
 const res = require("express/lib/response");
 const users = require("../models/auth");
+var validator = require("node-email-validation");
 
 exports.signUp = async (req, res, next) => {
   console.log("The signup API has been called in mvc learning");
   // const Email = req.body.email; //This "Email" spelling has to be different than of the schema when comparing the two values in find queries
-  const { firstName, lastName, email, password, confirmPassword, isAdmin } =
+  const { firstName, lastName, email, password, ConfirmPassword, isAdmin } =
     req.body;
-
+  const isEmailValid = validator.is_email_valid(email);
+  if (!isEmailValid) {
+    return res
+      .status(403)
+      .json({ message: "Please provide a valid email address" });
+  }
   const check = await users.findOne({ email: email });
 
   if (check) {
@@ -25,7 +31,7 @@ exports.signUp = async (req, res, next) => {
     });
   }
 
-  if (password != confirmPassword) {
+  if (password !== ConfirmPassword) {
     return res
       .status(201)
       .json({ message: "Password and confirm password does not match." });

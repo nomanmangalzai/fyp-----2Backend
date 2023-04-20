@@ -23,6 +23,7 @@ const transactionList = require("./src/routes/transaction");
 
 //Below are files of routes folder for client-side
 const productListing = require("./src/routes/client-side Routes/productListing");
+const shoppingCart = require("./src/routes/client-side Routes/shoppingCart");
 
 //Below are middllewares.
 app.use("/authUser", autRoute);
@@ -33,7 +34,8 @@ app.use("/reviewList", reviewList);
 app.use("/transactionList", transactionList);
 
 //Below are middlewares for client-side
-app.use("/clientProductListing", productListing);
+app.use("/client-product-listing", productListing);
+app.use("/shopping-cart", shoppingCart);
 
 const PORT = 3000;
 app.listen(PORT, console.log(`Server Started on port ${PORT}`));
