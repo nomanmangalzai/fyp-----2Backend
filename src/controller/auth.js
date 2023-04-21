@@ -6,6 +6,7 @@ const res = require("express/lib/response");
 const users = require("../models/auth");
 var validator = require("node-email-validation");
 const bcrypt = require("bcrypt");
+//random comment
 
 exports.signUp = async (req, res, next) => {
   console.log("The signup API has been called in mvc learning");
