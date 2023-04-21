@@ -63,6 +63,8 @@ exports.login = async (req, res, next) => {
 
   const Email = req.body.Email;
   const Password = req.body.Password;
+  const user = users.findOne({ email: Email });
+  console.log("user = " + user);
 
   const checkEmail = await users.findOne({ email: Email });
   const checkUser = await users.findOne({ email: Email });
