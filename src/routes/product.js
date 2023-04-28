@@ -35,16 +35,16 @@ router.put(
 );
 router.get(
   "/searchProducts",
-  verifyToken,
-  isAuthorized,
-  isAdmin,
+  // verifyToken,
+  // isAuthorized,
+  // isAdmin,
   productController.searchProducts
 );
 router.get(
   "/filterProducts",
-  verifyToken,
-  isAuthorized,
-  isAdmin,
+  // verifyToken,
+  // isAuthorized,
+  // isAdmin,
   productController.filterProducts
 );
 module.exports = router;
