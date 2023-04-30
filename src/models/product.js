@@ -17,7 +17,7 @@ const ImageSchema = mongoose.Schema({
   },
   size: {
     type: String,
-    // required: true,
+    required: [true, "Please include the product size"],
   },
   price: {
     type: Number,
