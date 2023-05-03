@@ -19,6 +19,7 @@ router.get(
   // isAdmin,
   productController.viewProducts
 );
+router.get("/product-description/:id", productController.productDescription);
 router.delete(
   "/deleteProduct/:id",
   // verifyToken,

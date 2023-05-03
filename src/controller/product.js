@@ -165,6 +165,41 @@ exports.viewProducts = async (req, res, next) => {
   }
 };
 
+exports.productDescription = async (req, res, next) => {
+  console.log("product Descripioin API called");
+  let deleteId = req.params.id;
+  // console.log(deleteId);
+  const productDescription = await ImageModel.findOne(
+    { sku: deleteId },
+    { __v: 0 }
+  );
+  // try {
+  //   const producDescription = await
+
+  // } catch (error) {
+
+  // }
+  // console.log(producDescription);
+  try {
+    ImageModel.findOne({ sku: deleteId }, function (err, docs) {
+      if (err) {
+        res.send("Error! You have entered wrong key type.");
+      } else {
+        if (docs === null) {
+          res.send("No record with mentioned sku");
+        } else {
+          res.status(201).json({
+            message: "product description fetched from database",
+            productdescription: productDescription,
+          });
+        }
+      }
+    });
+  } catch (error) {
+    console.log("error = " + error);
+  }
+};
+
 exports.updateProduct = async (req, res, next) => {
   console.log("UpdateProduct API has been hit.");
   // mongoose.Schema.Types.Boolean.convertToFalse.add("Deactive");
