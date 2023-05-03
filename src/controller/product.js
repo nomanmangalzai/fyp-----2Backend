@@ -168,7 +168,6 @@ exports.viewProducts = async (req, res, next) => {
 exports.productDescription = async (req, res, next) => {
   console.log("product Descripioin API called");
   const deleteId = req.params.id;
-  // console.log(deleteId);
   const productDescription = await ImageModel.findOne(
     { _id: deleteId },
     { __v: 0 }
