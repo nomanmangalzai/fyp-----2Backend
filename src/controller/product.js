@@ -193,6 +193,7 @@ exports.productDescription = async (req, res, next) => {
 };
 
 exports.updateProduct = async (req, res, next) => {
+  //check nodem odules deletion
   console.log("UpdateProduct API has been hit.");
   // mongoose.Schema.Types.Boolean.convertToFalse.add("Deactive");
   // mongoose.Schema.Types.Boolean.convertToTrue.add("Active");
