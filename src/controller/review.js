@@ -7,16 +7,7 @@ const verifyToken = require("./verifyToken");
 
 exports.postReview = async (req, res, next) => {
   console.log("The post Review API has been called.");
-  jwt.verify(req.token, secretKey, (error, userAuthenticationData) => {
-    if (error) {
-      res.send({ json: "invalid token", error });
-    } else {
-      res.json({
-        message: "Profile Accessed",
-        userAuthenticationData,
-      });
-    }
-  });
+
   // const { productName, customerName, Rating, Date } = req.body;
   // const idOfReview = req.body.reviewId;
   // console.log(Rating);
