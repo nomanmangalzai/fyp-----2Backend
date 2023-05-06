@@ -8,37 +8,49 @@ const verifyToken = require("./verifyToken");
 exports.postReview = async (req, res, next) => {
   console.log("The post Review API has been called.");
 
-  // const { productName, customerName, Rating, Date } = req.body;
-  // const idOfReview = req.body.reviewId;
-  // console.log(Rating);
-  // let deleteReviewId = req.params.id;
-  // const checkDuplicateReview = await review.findOne({
-  //   reviewId: idOfReview,
-  // });
-  // console.log(checkDuplicateReview);
+  const {
+    productName,
+    customerName,
+    email,
+    rating,
+    reviewTitle,
+    reviewMessage,
+    date,
+  } = req.body;
 
-  // if (checkDuplicateReview) {
-  //   return res
-  //     .status(403)
-  //     .json({ message: "Review with this id already exists" });
-  // }
+  const idOfReview = req.body.reviewId;
+  console.log(rating);
+  let deleteReviewId = req.params.id;
+  //check duplicate review
+  const checkDuplicateReview = await review.findOne({
+    _id: idOfReview,
+  });
+  console.log("checkDuplicateReview =  " + checkDuplicateReview);
 
-  // //   if ((customerId && productName && customerName && Rating && Date) === null) {
-  // const newReview = new review({
-  //   reviewId: idOfReview,
-  //   productName: productName,
-  //   customerName: customerName,
-  //   Rating: Rating,
-  //   Date: Date,
-  // });
-  // console.log(newReview);
-  // //below is saving
-  // await newReview.save().then((result) => {
-  //   return res.status(201).json({
-  //     message: "The review has been successfully stored.",
-  //   });
-  // });
-  // //}
+  if (checkDuplicateReview) {
+    return res
+      .status(403)
+      .json({ message: "Review with this id already exists" });
+  }
+
+  //   if ((customerId && productName && customerName && Rating && Date) === null) {
+  const newReview = new review({
+    productName: productName,
+    customerName: customerName,
+    email: email,
+    rating: rating,
+    reviewTitle: reviewTitle,
+    reviewMessage: reviewMessage,
+    date: date,
+  });
+  console.log(newReview);
+  //below is saving
+  await newReview.save().then((result) => {
+    return res.status(201).json({
+      message: "The review has been successfully stored.",
+    });
+  });
+  //}
 };
 exports.viewReviews = async (req, res, next) => {
   //good

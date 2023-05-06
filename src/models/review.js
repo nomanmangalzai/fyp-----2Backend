@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 
 const reviewSchema = mongoose.Schema({
+  productName: {
+    type: String,
+    required: [true, "Please enter the name of the product"],
+  },
   customerName: {
     type: String,
     required: [true, "Please enter the name of the reviewer"],
@@ -10,19 +14,19 @@ const reviewSchema = mongoose.Schema({
     type: String,
     required: [true, "Please enter the email of the reviewer"],
   },
-  Rating: {
+  rating: {
     type: Number, //number
     required: [true, "Please enter the review rating"],
   },
-  title: {
+  reviewTitle: {
     type: String,
     required: [true, "Please enter the review title"],
   },
-  message: {
+  reviewMessage: {
     type: String,
     required: [true, "Please enter the review description"],
   },
-  Date: {
+  date: {
     type: Date,
     default: Date.now,
     required: [true, "Please enter the date of the review"],

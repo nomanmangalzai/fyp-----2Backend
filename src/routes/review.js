@@ -7,16 +7,16 @@ const isAdmin = require("../controller/isAdmin");
 
 router.post(
   "/postReview",
-  verifyToken,
-  isAuthorized,
-  isAdmin,
+  // verifyToken,
+  // isAuthorized,
+  // isAdmin,
   reviewController.postReview
 );
 router.get(
   "/viewReviews",
-  verifyToken,
-  isAuthorized,
-  isAdmin,
+  // verifyToken,
+  // isAuthorized,
+  // isAdmin,
   reviewController.viewReviews
 );
 router.delete(
@@ -28,9 +28,9 @@ router.delete(
 );
 router.get(
   "/searchReview/:id",
-  verifyToken,
-  isAuthorized,
-  isAdmin,
+  // verifyToken,
+  // isAuthorized,
+  // isAdmin,
   reviewController.searchReview
 );
 module.exports = router;
