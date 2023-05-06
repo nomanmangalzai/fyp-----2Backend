@@ -41,7 +41,6 @@ exports.postReview = async (req, res, next) => {
   // //}
 };
 exports.viewReviews = async (req, res, next) => {
-  //good
   console.log("view reviews api called.");
   try {
     const fetchedReviews = await review.find({}, { _id: 0, __v: 0 });
