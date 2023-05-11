@@ -12,8 +12,7 @@ const bcrypt = require("bcrypt");
 exports.signUp = async (req, res, next) => {
   console.log("The signup API has been called in mvc learning");
   // const Email = req.body.email; //This "Email" spelling has to be different than of the schema when comparing the two values in find queries
-  const { firstName, lastName, email, password, ConfirmPassword, isAdmin } =
-    req.body;
+  const { firstName, lastName, email, password, ConfirmPassword } = req.body;
   const isEmailValid = validator.is_email_valid(email);
   if (!isEmailValid) {
     return res
@@ -48,7 +47,7 @@ exports.signUp = async (req, res, next) => {
     lastName: lastName,
     email: email,
     password: hash,
-    isAdmin: isAdmin,
+    // isAdmin: isAdmin,
   });
 
   // await user.save().then((user) => {
