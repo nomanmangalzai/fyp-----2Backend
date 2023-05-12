@@ -4,13 +4,24 @@ const router = express.Router();
 const verifyToken = require("../controller/verifyToken"); // import verifyToken file
 const isAuthorized = require("../controller/isAuthorized");
 const isAdmin = require("../controller/isAdmin");
+//file upload
+const multer = require("multer");
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
 
 router.post(
   "/postProduct",
-  // verifyToken,
-  // isAuthorized,
-  // isAdmin,
-  productController.postItem
+  upload.single("image"),
+  productController.postProduct
 );
 router.get(
   "/viewProducts",

@@ -9,57 +9,53 @@ const ImageSchema = mongoose.Schema({
   sku: {
     type: Number,
     // unique: true,
-    //required: [true, "Please Include the product sku"],
+    required: [true, "Please Include the product sku"],
   },
   color: {
     type: String,
-    //required: true,
+    required: true,
   },
   size: {
     type: String,
-    //required: [true, "Please include the product size"],
+    required: [true, "Please include the product size"],
   },
   price: {
     type: Number,
-    // required: true,
+    required: true,
   },
   status: {
     type: Boolean,
-    // required: true,
+    required: true,
   },
   tag: {
     type: String,
-    //  required: true,
+    required: true,
   },
   description: {
     type: String,
-    // required: true,
+    required: true,
   },
   quantity: {
     type: Number,
-    // required: true,
+    required: true,
   },
   date: {
     type: Date,
     default: Date.now,
-    // required: true,
+    required: true,
   },
   category: {
     type: String,
-    //   required: true,
+    required: true,
   },
   subcategory: {
     type: String,
-    // required: true,
+    required: true,
   },
   image: {
     type: String,
     required: [true, "Please Include the product image URL"],
   },
-  // contentType: {
-  //   type: String,
-  //   required: true,
-  // },
 });
 
 module.exports = ImageModel = mongoose.model("imageModel", ImageSchema);
