@@ -1,35 +1,19 @@
-const mongoose = require("mongoose");
-//making a schema/top-row
-const users = mongoose.Schema({
-  firstName: {
-    type: String,
-  },
-  lastName: {
-    type: String,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 
-  password: {
-    type: String,
-    required: true,
-  },
-  phoneNo: {
-    type: String,
-  },
-  Address: {
-    type: String,
-  },
-  isAdmin: {
-    type: Boolean,
-    required: true,
-    default: "false",
-  },
+const userSchema = new mongoose.Schema({
+  firstName: String,
+  lastName: String,
+  email: String,
+  password: String,
 });
 
-//table // collection
-const userModel = mongoose.model("user", users);
-module.exports = userModel;
+// Before saving the user, hash the password
+userSchema.pre('save', async function (next) {
+  if (this.isModified('password')) {
+    this.password = await bcrypt.hash(this.password, 10);
+  }
+  next();
+});
+
+module.exports = mongoose.model('User', userSchema);
