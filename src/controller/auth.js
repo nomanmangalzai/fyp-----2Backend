@@ -1,10 +1,12 @@
 // controllers/authController.js
 const User = require("../models/auth");
 
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
-const { validationResult } = require('express-validator');
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const { validationResult } = require("express-validator");
 const secret = require("./config").secret; //contains secret key used to sign tokens
+const emailValidator = require("node-email-validation");
+
 const login = async (req, res) => {
   console.log("signin api has been hit");
 
@@ -20,13 +22,13 @@ const login = async (req, res) => {
     let user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(400).json({ message: 'Invalid Credentials' });
+      return res.status(400).json({ message: "Invalid Credentials" });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      return res.status(400).json({ message: 'Invalid Credentials' });
+      return res.status(400).json({ message: "Invalid Credentials" });
     }
 
     const payload = {
@@ -34,20 +36,23 @@ const login = async (req, res) => {
         id: user.id,
       },
     };
-
-    jwt.sign(
-      payload,
-      secret,
-      { expiresIn: '5 days' },
-      (err, token) => {
-        if (err) throw err;
-        res.json({ token });
-      }
+    let userInfo = await User.find(
+      { email: email },
+      { __v: 0, password: 0, _id: 0 }
     );
+
+    jwt.sign(payload, secret, { expiresIn: "5 days" }, (err, token) => {
+      if (err) throw err;
+      res.json({
+        token,
+        User: userInfo,
+        message: "Congratulations! You have been successfully logged in",
+      });
+    });
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server error');
-  }
+    res.status(500).send("Server error");
+  }
 };
 
 const signup = async (req, res) => {
@@ -56,9 +61,17 @@ const signup = async (req, res) => {
   console.log("signup api has been hit");
 
   const userExists = await User.findOne({ email });
+  const isEmailValid = emailValidator.is_email_valid(email);
+  if (!isEmailValid) {
+    return res
+      .status(403)
+      .json({ message: "Please provide a valid email address" });
+  }
 
   if (userExists) {
-    return res.status(400).json({ message: "Email already registered." });
+    return res
+      .status(400)
+      .json({ message: "User with this email is already registered." });
   }
 
   const newUser = new User({
@@ -76,5 +89,5 @@ const signup = async (req, res) => {
 
 module.exports = {
   signup,
-  login
+  login,
 };

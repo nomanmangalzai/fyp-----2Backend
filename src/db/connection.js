@@ -8,7 +8,7 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => {
-    console.log("Connection successful 3");
+    console.log("Connection successful");
   })
   .catch((err) => console.log("no connection"));
 
