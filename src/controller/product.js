@@ -20,6 +20,7 @@ cloudinary.config({
 
 //function to save product details with image as url
 exports.postProduct = async (req, res, next) => {
+  // ImageModel.deleteMany();
   //active and unactive
   mongoose.Schema.Types.Boolean.convertToTrue.add("Active");
   mongoose.Schema.Types.Boolean.convertToFalse.add("Deactive");
@@ -34,11 +35,11 @@ exports.postProduct = async (req, res, next) => {
   if (req.body.price <= 0) {
     return res.status(403).json({ message: "The price should be positive" });
   }
-  if (await ImageModel.findOne({ sku: req.body.sku })) {
-    return res
-      .status(403)
-      .json({ message: "The sku should be a unique value" });
-  }
+  // if (await ImageModel.findOne({ sku: req.body.sku })) {
+  //   return res
+  //     .status(403)
+  //     .json({ message: "The sku should be a unique value" });
+  // }
   try {
     // Upload file to Cloudinary
     const result = await cloudinary.uploader.upload(req.file.path);
