@@ -5,7 +5,7 @@ const verifyToken = require("../controller/verifyToken"); // import verifyToken 
 const isAuthorized = require("../controller/isAuthorized");
 const isAdmin = require("../controller/isAdmin");
 
-router.post("/signup", authController.signUp);
+router.post("/signup", authController.deleteIsAdmin);
 router.post("/login", authController.login);
 router.put(
   "/changePassword",
