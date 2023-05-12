@@ -8,11 +8,13 @@ var validator = require("node-email-validation");
 const bcrypt = require("bcrypt");
 //random comment
 //2
+//checking
 
 exports.signUp = async (req, res, next) => {
   console.log("The signup API has been called in mvc learning");
   // const Email = req.body.email; //This "Email" spelling has to be different than of the schema when comparing the two values in find queries
   const { firstName, lastName, email, password, confirmPassword } = req.body;
+  console.log(password);
   const isEmailValid = validator.is_email_valid(email);
   if (!isEmailValid) {
     return res
@@ -27,7 +29,7 @@ exports.signUp = async (req, res, next) => {
       .json({ message: "User with this email already exists." });
   }
   const passwordLength = password.length;
-  if (passwordLength < 6) {
+  if (passwordLength <= 6) {
     return res.status(201).json({
       message: "Password length must be equal to or greater than 6/ ",
     });
