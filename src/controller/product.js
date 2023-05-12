@@ -5,7 +5,59 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const res = require("express/lib/response");
 const mongoose = require("mongoose");
 const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
 const ImageModel = require("../models/product");
+
+//function to save product details with image as url
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/");
+  },
+  filename: function (req, file, cb) {
+    cb(
+      null,
+      file.fieldname + "-" + Date.now() + path.extname(file.originalname)
+    );
+  },
+});
+
+const upload = multer({ storage: storage }).single("image");
+//
+
+exports.postItem = async (req, res, next) => {
+  // await ImageModel.deleteMany();
+  if (ImageModel.findOne({ productTitle: req.body.productTitle })) {
+    return res.json("enter a unique productTitle");
+  }
+  console.log("postItem called");
+  upload(req, res, (err) => {
+    if (err) {
+      console.log(err);
+      res.sendStatus(500);
+    } else {
+      const imagePath = req.file.path;
+      const imageUrl = `http://localhost:3000/${imagePath}`;
+
+      const newImage = new ImageModel({
+        productTitle: req.body.productTitle,
+        image: imageUrl,
+      });
+
+      newImage.save((err) => {
+        if (err) {
+          console.log(err);
+          res.sendStatus(500);
+        } else {
+          res.sendStatus(200);
+          res.status(200).json("product description successfully uploaded");
+        }
+      });
+    }
+  });
+
+  //
+};
 
 // const product = require("../models/product");
 mongoose.Schema.Types.Boolean.convertToTrue.add("Active");

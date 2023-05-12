@@ -10,7 +10,7 @@ router.post(
   // verifyToken,
   // isAuthorized,
   // isAdmin,
-  productController.postProduct
+  productController.postItem
 );
 router.get(
   "/viewProducts",
