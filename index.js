@@ -8,6 +8,8 @@ app.use(cors({ origin: 'http://localhost:3010' }));
 
 require("./src/db/connection");
 app.use(bodyParser.json());
+app.use(express.json());
+
 app.get(express.json());
 const multer = require("multer");
 app.use(bodyParser.urlencoded({ extended: false }));
