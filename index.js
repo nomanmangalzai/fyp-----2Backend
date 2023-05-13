@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 // app.use(cors());
 //123 testing
-app.use(cors({ origin: 'http://localhost:3010' }));
+app.use(cors({ origin: "http://localhost:3005" }));
 
 require("./src/db/connection");
 app.use(bodyParser.json());
