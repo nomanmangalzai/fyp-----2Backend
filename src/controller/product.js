@@ -18,6 +18,9 @@ cloudinary.config({
   api_secret: "8VLn1vP3ZUio2ksC7_oYKv7o4Ks",
 });
 
+// mongoose.Schema.Types.Boolean.convertToTrue.add("Active");
+// mongoose.Schema.Types.Boolean.convertToFalse.add("Deactive");
+
 //function to save product details with image as url
 // exports.postProduct = async (req, res, next) => {
 //   // ImageModel.deleteMany();
@@ -96,8 +99,8 @@ exports.postProduct = async (req, res, next) => {
 
   //below active is converted to true and
   //deactive is converted to false
-  mongoose.Schema.Types.Boolean.convertToTrue.add("Active");
-  mongoose.Schema.Types.Boolean.convertToFalse.add("Deactive");
+  // mongoose.Schema.Types.Boolean.convertToTrue.add("Active");
+  // mongoose.Schema.Types.Boolean.convertToFalse.add("Deactive");
 
   //below are checks
   const checkProduct = await ImageModel.findOne({
