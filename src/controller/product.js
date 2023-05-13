@@ -409,7 +409,7 @@ exports.updateProduct = async (req, res, next) => {
 exports.deleteProduct = async (req, res, next) => {
   console.log("The delete product API has been hit.");
   let deleteId = req.params.id;
-  const productAvailable = ImageModel.find({ sku: deleteId });
+  const productAvailable = ImageModel.find({ _id: deleteId });
 
   try {
     ImageModel.findOneAndDelete({ sku: deleteId }, function (err, docs) {
