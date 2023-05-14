@@ -89,6 +89,65 @@ const signup = async (req, res) => {
 
 const adminAccountManagement = async (req, res, next) => {
   console.log("admin account management api called");
+  //  let deleteId = req.params.id;
+
+  const userId = req.params.id;
+
+  console.log(userId);
+  try {
+    const { firstName, lastName, email, phoneNo, age } = req.body;
+    // if (firstName === "null") {
+    //   firstName = User.firstName;
+    // }
+    // console.log();
+    // if (lastName === "null") {
+    //   lastName = await User.findOne();
+    // }
+    // console.log(lastName);
+    // if (email === "null") {
+    //   email = User.email;
+    // }
+    // if (phoneNo === "null") {
+    //   phoneNo = User.phoneNo;
+    // }
+    // if (age === "null") {
+    //   age = User.age;
+    // }
+    const userUpdateInformation = await User.findByIdAndUpdate(
+      {
+        _id: userId,
+      },
+      {
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        phoneNo: phoneNo,
+        age: age,
+      },
+      { new: true }
+    );
+    const fetchUpdateInformation = await User.findOne(
+      { _id: userId },
+      { __v: 0, password: 0, _id: 0 }
+    );
+    //  let userInfo = await User.find(
+    //   { email: email },
+    //   { __v: 0, password: 0, _id: 0 }
+    // );
+    //send response
+    return res.status(200).json({
+      message: "Your information has been successfully updated",
+      status: true,
+      data: fetchUpdateInformation,
+    });
+  } catch (error) {}
+
+  //sample
+  // const userPassword = await users.findOneAndUpdate(
+  //   { email: Email },
+  //   { password: newPassword },
+  //   { new: true }
+  // );
 };
 module.exports = {
   signup,

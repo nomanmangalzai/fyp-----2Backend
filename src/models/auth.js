@@ -8,7 +8,10 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   phoneNo: {
     type: String,
-    required: ["Please provide a phone number"],
+    // required: ["Please provide a phone number"],
+  },
+  age: {
+    type: Number,
   },
   // password: String,
 });
