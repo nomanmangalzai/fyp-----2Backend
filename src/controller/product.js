@@ -409,18 +409,19 @@ exports.updateProduct = async (req, res, next) => {
 exports.deleteProduct = async (req, res, next) => {
   console.log("The delete product API has been hit.");
   let deleteId = req.params.id;
+  console.log(deleteId);
   const productAvailable = ImageModel.find({ _id: deleteId });
 
   try {
-    ImageModel.findOneAndDelete({ sku: deleteId }, function (err, docs) {
+    ImageModel.findOneAndDelete({ _id: deleteId }, function (err, docs) {
       if (err) {
-        res.send("Error! You have entered wrong key type.");
+        res.send("Error! You have entered wrong id type.");
       } else {
         if (docs === null) {
-          res.send("No record with mentioned sku");
+          res.send("No record with given id");
         } else {
           res.send(
-            "The requested record with SKU = " + deleteId + " has been deleted"
+            "The requested record with id = " + deleteId + " has been deleted"
           );
         }
       }
