@@ -289,7 +289,7 @@ exports.updateProduct = async (req, res, next) => {
 
   try {
     ImageModel.findOneAndUpdate(
-      { sku: deleteId },
+      { _id: deleteId },
       {
         // $set: req.body,
         $set: {

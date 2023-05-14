@@ -5,10 +5,11 @@ const verifyToken = require("../controller/verifyToken"); // import verifyToken 
 const isAuthorized = require("../controller/isAuthorized");
 const isAdmin = require("../controller/isAdmin");
 const { check } = require("express-validator");
+const auth = require("../models/auth");
 
-router.post("/signup", authController.signup);
+router.post("/admin-signup", authController.signup);
 router.post(
-  "/login",
+  "/admin-login",
   [
     check("email", "Please include a valid email").isEmail(),
     check("password", "Password is required").exists(),
@@ -28,4 +29,13 @@ router.put(
   "/admin-account-management/:id",
   authController.adminAccountManagement
 );
+
+// Below are routes for customer
+router.post("/customer-signup", authController.customerSignup);
+router.post("/customer-login", authController.customerLogin);
+router.put(
+  "/customer-account-management/:id",
+  authController.customerAccountManagement
+);
+
 module.exports = router;
