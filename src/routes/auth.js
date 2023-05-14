@@ -24,5 +24,8 @@ router.post(
 //   isAuthorized,
 //   authController.changePassword
 // );
-
+router.put(
+  "/admin-account-management/:id",
+  authController.adminAccountManagement
+);
 module.exports = router;

@@ -87,7 +87,11 @@ const signup = async (req, res) => {
   });
 };
 
+const adminAccountManagement = async (req, res, next) => {
+  console.log("admin account management api called");
+};
 module.exports = {
   signup,
   login,
+  adminAccountManagement,
 };

@@ -247,7 +247,7 @@ exports.productDescription = async (req, res, next) => {
         res.send("Error! You have entered wrong key type.");
       } else {
         if (docs === null) {
-          res.send("No record with mentioned sku");
+          res.send("No record with mentioned id");
         } else {
           res.status(201).json({
             message: "product description fetched from database",
