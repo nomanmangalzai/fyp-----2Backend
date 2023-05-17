@@ -10,7 +10,7 @@ mongoose
   .then(() => {
     console.log("Connection successful");
   })
-  .catch((err) => console.log("no connection"));
+  .catch((err) => console.log("No connection"));
 
 // mongoose.connect(
 //   "mongodb://localhost:27017/DawoodzaiMallDb",

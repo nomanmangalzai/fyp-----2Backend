@@ -6,6 +6,19 @@ const bcrypt = require("bcrypt");
 const { validationResult } = require("express-validator");
 const secret = require("./config").secret; //contains secret key used to sign tokens
 const emailValidator = require("node-email-validation");
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
+
+//cloundinary settings
+const cloudinary = require("cloudinary").v2;
+// const MyModel = require("../models/myModel");
+
+cloudinary.config({
+  cloud_name: "dldvi4iyz",
+  api_key: "233835657197369",
+  api_secret: "8VLn1vP3ZUio2ksC7_oYKv7o4Ks",
+});
 
 const login = async (req, res, next) => {
   console.log("signin api has been hit");

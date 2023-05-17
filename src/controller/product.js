@@ -430,20 +430,58 @@ exports.deleteProduct = async (req, res, next) => {
     console.log("Could not delete the product." + error);
   }
 };
-
 exports.searchProducts = async (req, res, next) => {
   console.log("The searchProducts API has been called.");
-  const searchedForItem = req.query;
+  const searchedForItem = req.query.productTitle;
   console.log(searchedForItem);
-  const searchedForProduct = await ImageModel.find(req.query);
-  res.status(200).json({
-    status: "success",
-    NoOfresults: searchedForProduct.length,
-    data: {
-      searchedForProduct,
-    },
-  });
+
+  // make a regular expression pattern for the search term
+  const searchTerm = new RegExp(searchedForItem, "i");
+
+  try {
+    const searchedForProduct = await ImageModel.find({
+      productTitle: searchTerm,
+    });
+
+    res.status(200).json({
+      status: "success",
+      NoOfresults: searchedForProduct.length,
+      data: {
+        searchedForProduct,
+      },
+    });
+  } catch (error) {
+    console.error("Error searching products:", error);
+    res.status(500).json({
+      status: "error",
+      message: "An error occurred while searching for products.",
+    });
+  }
 };
+
+// exports.searchProducts = async (req, res, next) => {
+//   console.log("The searchProducts API has been called.");
+//   const { productTitle } = req.query;
+//   const queryObject = {};
+//   if (productTitle) {
+//     queryObject.productTitle = productTitle;
+//   }
+//   console.log(productTitle);
+
+//   // const searchedForProduct = await ImageModel.find(queryObject);
+
+//   const searchedForProduct = await ImageModel.find({
+//     productTitle: { $regex: productTitle, $options: "i" },
+//   });
+
+//   res.status(200).json({
+//     status: "success",
+//     NoOfresults: searchedForProduct.length,
+//     data: {
+//       searchedForProduct,
+//     },
+//   });
+// };
 
 exports.filterProducts = async (req, res, next) => {
   console.log("filterProducts API has been hit.");
@@ -451,7 +489,6 @@ exports.filterProducts = async (req, res, next) => {
   console.log(searchedForItem);
   const searchedForProduct = await ImageModel.find(req.query, {
     __v: 0,
-    _id: 0,
   });
   res.status(200).json({
     status: "success",
