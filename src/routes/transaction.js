@@ -7,37 +7,37 @@ const isAdmin = require("../controller/isAdmin");
 
 router.post(
   "/postTransaction",
-  verifyToken,
-  isAuthorized,
-  isAdmin,
+  // verifyToken,
+  // isAuthorized,
+  // isAdmin,
   TransactionController.postTransaction
 );
 router.get(
   "/viewTransaction",
-  verifyToken,
-  isAuthorized,
-  isAdmin,
+  // verifyToken,
+  // isAuthorized,
+  // isAdmin,
   TransactionController.viewTransaction
 );
 router.get(
   "/filterTransactions",
-  verifyToken,
-  isAuthorized,
-  isAdmin,
+  // verifyToken,
+  // isAuthorized,
+  // isAdmin,
   TransactionController.filterTransactions
 );
 router.delete(
   "/deleteTransaction/:id",
-  verifyToken,
-  isAuthorized,
-  isAdmin,
+  // verifyToken,
+  // isAuthorized,
+  // isAdmin,
   TransactionController.deleteTransaction
 );
 router.get(
   "/searchTransactions",
-  verifyToken,
-  isAuthorized,
-  isAdmin,
+  // verifyToken,
+  // isAuthorized,
+  // isAdmin,
   TransactionController.searchTransactions
 );
 module.exports = router;

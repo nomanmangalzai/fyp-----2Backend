@@ -28,9 +28,9 @@ router.delete(
 );
 router.get(
   "/searchOrders",
-  verifyToken,
-  isAuthorized,
-  isAdmin,
+  // verifyToken,
+  // isAuthorized,
+  // isAdmin,
   orderControler.searchOrders
 );
 module.exports = router;
