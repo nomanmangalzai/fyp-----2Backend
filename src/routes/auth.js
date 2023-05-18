@@ -7,6 +7,20 @@ const isAdmin = require("../controller/isAdmin");
 const { check } = require("express-validator");
 const auth = require("../models/auth");
 
+//debugging below
+const multer = require("multer");
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
+
 router.post("/admin-signup", authController.signup);
 router.post(
   "/admin-login",
@@ -35,6 +49,7 @@ router.post("/customer-signup", authController.customerSignup);
 router.post("/customer-login", authController.customerLogin);
 router.put(
   "/customer-account-management/:id",
+  upload.single("image"),
   authController.customerAccountManagement
 );
 

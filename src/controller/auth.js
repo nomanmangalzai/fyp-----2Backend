@@ -12,7 +12,6 @@ const fs = require("fs");
 
 //cloundinary settings
 const cloudinary = require("cloudinary").v2;
-// const MyModel = require("../models/myModel");
 
 cloudinary.config({
   cloud_name: "dldvi4iyz",
@@ -230,6 +229,58 @@ const customerSignup = async (req, res, next) => {
   });
 };
 
+// const customerLogin = async (req, res, next) => {
+
+//   console.log("user login api is called");
+
+//   const errors = validationResult(req);
+
+//   if (!errors.isEmpty()) {
+//     return res.status(400).json({ errors: errors.array() });
+//   }
+
+//   const { email, password } = req.body;
+
+//   try {
+//     let user = await User.findOne({ email });
+
+//     if (!user) {
+//       return res.status(400).json({ message: "Invalid Credentials" });
+//     }
+
+//     const isMatch = await bcrypt.compare(password, user.password);
+//     if (!isMatch) {
+//       return res.status(400).json({ message: "Invalid Credentials" });
+//     }
+
+//     const payload = {
+//       user: {
+//         id: user.id,
+//         email: user.email,
+//       },
+//     };
+//     let userInfo = await User.find(
+//       { email: email },
+//       { __v: 0, password: 0, _id: 0 }
+//     );
+
+//     jwt.sign(payload, secret, { expiresIn: "2 days" }, (err, token) => {
+//       if (err) throw err;
+//       res.json({
+//         token,
+//         User: userInfo,
+//         message: "Congratulations! You have been successfully logged in",
+//       });
+//     });
+//   } catch (err) {
+//     console.error(err.message);
+//     res.status(500).send("Server error");
+//   }
+// };
+
+//customerAccountManagement
+
+//login with phone number.
 const customerLogin = async (req, res, next) => {
   console.log("user login api is called");
 
@@ -239,10 +290,13 @@ const customerLogin = async (req, res, next) => {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const { email, password } = req.body;
+  const { phoneNo, password } = req.body;
+  if (phoneNo.length != 10) {
+    return res.send("phone number length should be 10");
+  }
 
   try {
-    let user = await User.findOne({ email });
+    let user = await User.findOne({ phoneNo });
 
     if (!user) {
       return res.status(400).json({ message: "Invalid Credentials" });
@@ -256,12 +310,12 @@ const customerLogin = async (req, res, next) => {
     const payload = {
       user: {
         id: user.id,
-        email: user.email,
+        phoneNo: user.phoneNo,
       },
     };
     let userInfo = await User.find(
-      { email: email },
-      { __v: 0, password: 0, _id: 0 }
+      { phoneNo: phoneNo },
+      { __v: 0, password: 0 }
     );
 
     jwt.sign(payload, secret, { expiresIn: "2 days" }, (err, token) => {
@@ -282,23 +336,38 @@ const customerAccountManagement = async (req, res, next) => {
   //  let deleteId = req.params.id;
 
   const userId = req.params.id;
+  // var newEmail = req.body.newEmal;
+  const checkUser = await User.findOne({ userId });
+  if (!checkUser) {
+    return res.status(400).json("No  User with this id");
+    // console.log("User with give user id does not exist");
+  }
 
   console.log(userId);
   try {
-    const { firstName, lastName, email, phoneNo, age } = req.body;
-    const userUpdateInformation = await User.findByIdAndUpdate(
+    // console.log("debug");
+
+    const { firstName, lastName, newEmail, phoneNo, age } = req.body;
+    //below picture uploading to cloudinary
+    const result = await cloudinary.uploader.upload(req.file.path);
+
+    // const uploadPictureToCloudinary = await cloudinary.uploader(req.file.path);
+    console.log(age);
+
+    const userUpdateInformation = await User.findOneAndUpdate(
       {
-        _id: userId,
+        phoneNo: phoneNo,
       },
       {
         firstName: firstName,
         lastName: lastName,
-        email: email,
+        email: newEmail,
         phoneNo: phoneNo,
         age: age,
+        image: result.secure_url,
       },
       { new: true }
-    );
+    ).then(console.log("user information successfully updated"));
     const fetchUpdateInformation = await User.findOne(
       { _id: userId },
       { __v: 0, password: 0, _id: 0 }
@@ -309,14 +378,13 @@ const customerAccountManagement = async (req, res, next) => {
     // );
     //send response
     return res.status(200).json({
+      url: uploadPictureToCloudinary.secure_url,
       message: "Your account details have been successfully updated",
       status: true,
       data: fetchUpdateInformation,
     });
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: "Internal Server error", "errorMessage =": error });
+    return res.status(500).json({ message: "Internal Server error", error });
   }
 };
 module.exports = {

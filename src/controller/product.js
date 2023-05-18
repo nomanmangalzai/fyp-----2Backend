@@ -21,61 +21,61 @@ cloudinary.config({
 // mongoose.Schema.Types.Boolean.convertToTrue.add("Active");
 // mongoose.Schema.Types.Boolean.convertToFalse.add("Deactive");
 
-//function to save product details with image as url
-// exports.postProduct = async (req, res, next) => {
-//   // ImageModel.deleteMany();
-//   //active and unactive
-//   mongoose.Schema.Types.Boolean.convertToTrue.add("Active");
-//   mongoose.Schema.Types.Boolean.convertToFalse.add("Deactive");
-//   //
-//   //
-//   // duplicateProduct = ImageModel.findOne({ productTitle: req.body.productTitle })
-//   if (await ImageModel.findOne({ productTitle: req.body.productTitle })) {
-//     return res.status(403).json({
-//       message: "Product with the same name already exists.",
-//     });
-//   }
-//   if (req.body.price <= 0) {
-//     return res.status(403).json({ message: "The price should be positive" });
-//   }
-//   // if (await ImageModel.findOne({ sku: req.body.sku })) {
-//   //   return res
-//   //     .status(403)
-//   //     .json({ message: "The sku should be a unique value" });
-//   // }
-//   try {
-//     // Upload file to Cloudinary
-//     const result = await cloudinary.uploader.upload(req.file.path);
+// function to save product details with image as url
+exports.testPostProduct = async (req, res, next) => {
+  // ImageModel.deleteMany();
+  //active and unactive
+  mongoose.Schema.Types.Boolean.convertToTrue.add("Active");
+  mongoose.Schema.Types.Boolean.convertToFalse.add("Deactive");
+  //
+  //
+  // duplicateProduct = ImageModel.findOne({ productTitle: req.body.productTitle })
+  if (await ImageModel.findOne({ productTitle: req.body.productTitle })) {
+    return res.status(403).json({
+      message: "Product with the same name already exists.",
+    });
+  }
+  if (req.body.price <= 0) {
+    return res.status(403).json({ message: "The price should be positive" });
+  }
+  // if (await ImageModel.findOne({ sku: req.body.sku })) {
+  //   return res
+  //     .status(403)
+  //     .json({ message: "The sku should be a unique value" });
+  // }
+  try {
+    // Upload file to Cloudinary
+    const result = await cloudinary.uploader.upload(req.file.path);
 
-//     // Create a new File document with the Cloudinary URL
-//     const file = new ImageModel({
-//       productTitle: req.body.productTitle,
-//       sku: req.body.sku,
-//       color: req.body.color,
-//       size: req.body.size,
-//       price: req.body.price,
-//       status: req.body.status,
-//       tag: req.body.tag,
-//       description: req.body.description,
-//       quantity: req.body.quantity,
-//       date: req.body.date,
-//       category: req.body.category,
-//       subcategory: req.body.subcategory,
-//       image: result.secure_url,
-//     });
+    // make a new File document with the Cloudinary URL
+    const file = new ImageModel({
+      productTitle: req.body.productTitle,
+      sku: req.body.sku,
+      color: req.body.color,
+      size: req.body.size,
+      price: req.body.price,
+      status: req.body.status,
+      tag: req.body.tag,
+      description: req.body.description,
+      quantity: req.body.quantity,
+      date: req.body.date,
+      category: req.body.category,
+      subcategory: req.body.subcategory,
+      image: result.secure_url,
+    });
 
-//     // Save the File document to the MongoDB database
-//     await file.save();
+    // Save the File document to the MongoDB database
+    await file.save();
 
-//     res.status(200).json({
-//       url: result.secure_url,
-//       success: true,
-//       message: "Product has been uploaded successfully",
-//     });
-//   } catch (err) {
-//     next(err);
-//   }
-// };
+    res.status(200).json({
+      url: result.secure_url,
+      success: true,
+      message: "Product has been uploaded successfully",
+    });
+  } catch (err) {
+    next(err);
+  }
+};
 
 // const product = require("../models/product");
 

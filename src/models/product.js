@@ -8,6 +8,7 @@ const ImageSchema = mongoose.Schema({
   },
   sku: {
     type: Number,
+    unique: true,
 
     // required: [true, "Please Include the product sku"],
   },

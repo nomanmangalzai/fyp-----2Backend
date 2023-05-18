@@ -23,6 +23,13 @@ router.post(
   upload.single("image"),
   productController.postProduct
 );
+
+//
+// router.post(
+//   "/postProduct",
+//   upload.single("image"),
+//   productController.testPostProduct
+// );
 router.get(
   "/viewProducts",
   // verifyToken,

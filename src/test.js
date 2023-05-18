@@ -1,3 +1,59 @@
+//function to save product details with image as url
+// exports.postProduct = async (req, res, next) => {
+//   // ImageModel.deleteMany();
+//   //active and unactive
+//   mongoose.Schema.Types.Boolean.convertToTrue.add("Active");
+//   mongoose.Schema.Types.Boolean.convertToFalse.add("Deactive");
+//   //
+//   //
+//   // duplicateProduct = ImageModel.findOne({ productTitle: req.body.productTitle })
+//   if (await ImageModel.findOne({ productTitle: req.body.productTitle })) {
+//     return res.status(403).json({
+//       message: "Product with the same name already exists.",
+//     });
+//   }
+//   if (req.body.price <= 0) {
+//     return res.status(403).json({ message: "The price should be positive" });
+//   }
+//   // if (await ImageModel.findOne({ sku: req.body.sku })) {
+//   //   return res
+//   //     .status(403)
+//   //     .json({ message: "The sku should be a unique value" });
+//   // }
+//   try {
+//     // Upload file to Cloudinary
+//     const result = await cloudinary.uploader.upload(req.file.path);
+
+//     // make a new File document with the Cloudinary URL
+//     const file = new ImageModel({
+//       productTitle: req.body.productTitle,
+//       sku: req.body.sku,
+//       color: req.body.color,
+//       size: req.body.size,
+//       price: req.body.price,
+//       status: req.body.status,
+//       tag: req.body.tag,
+//       description: req.body.description,
+//       quantity: req.body.quantity,
+//       date: req.body.date,
+//       category: req.body.category,
+//       subcategory: req.body.subcategory,
+//       image: result.secure_url,
+//     });
+
+//     // Save the File document to the MongoDB database
+//     await file.save();
+
+//     res.status(200).json({
+//       url: result.secure_url,
+//       success: true,
+//       message: "Product has been uploaded successfully",
+//     });
+//   } catch (err) {
+//     next(err);
+//   }
+// };
+
 // // index.js
 // const express = require('express');
 // const bodyParser = require('body-parser');
@@ -26,7 +82,6 @@
 // const port = process.env.PORT || 3000;
 // app.listen(port, () => console.log(`Server running on port ${port}`));
 
-
 // // routes/authRoutes.js
 // const express = require('express');
 // const authController = require('../controllers/authController');
@@ -36,7 +91,6 @@
 // router.post('/signup', authController.signup);
 
 // module.exports = router;
-
 
 // // controllers/authController.js
 // const User = require('../models/userModel');
@@ -97,7 +151,7 @@
 
 // router.post(
 //   '/login',
-//   [             
+//   [
 //     check('email', 'Please include a valid email').isEmail(),
 //     check('password', 'Password is required').exists(),
 //   ],
@@ -150,7 +204,6 @@
 
 // app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 
-
 // // Model (User.js)
 // const mongoose = require('mongoose');
 // const bcrypt = require('bcrypt');
@@ -169,12 +222,11 @@
 
 // module.exports = mongoose.model('User', UserSchema);
 
-
 // // Controller (authController.js)
 // const jwt = require('jsonwebtoken');
 // const bcrypt = require('bcrypt');
 // const { validationResult } = require('express-validator');
-// const User = require('../models/User'); 
+// const User = require('../models/User');
 
 // exports.login = async (req, res) => {
 //   const errors = validationResult(req);
