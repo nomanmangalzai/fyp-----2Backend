@@ -41,14 +41,9 @@ exports.postTransaction = async (req, res, next) => {
 exports.viewTransaction = async (req, res, next) => {
   console.log("VIEW TRANSACTIONS API HAS BEEN HIT.  ");
   try {
-    // const transactions = await transaction.find();
-    // console.log(transactions.customerName);
-    // res.send(transactions);
-
-    const results = await transaction.find({}, { __v: 0 });
-    const { customerName } = results;
-    console.log(customerName);
-    res.send(results);
+    const transactions = await transaction.find();
+    console.log(transactions);
+    res.json(transactions);
   } catch (error) {
     console.log(error.message);
   }
@@ -58,10 +53,7 @@ exports.filterTransactions = async (req, res, next) => {
   console.log("FilterProducts API has been called");
   const searchedForTransaction = req.query;
   console.log(searchedForTransaction);
-  const searchedForTransactions = await transaction.find(req.query, {
-    __v: 0,
-    _id: 0,
-  });
+  const searchedForTransactions = await transaction.find(req.query);
   res.status(200).json({
     status: "success",
     NoOfresultsFiltered: searchedForTransactions.length,
