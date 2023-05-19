@@ -68,7 +68,7 @@ exports.deleteTransaction = async (req, res, next) => {
   const deleteTransactionId = req.params.id;
   console.log(deleteTransactionId);
   transaction.findOneAndDelete(
-    { transactionId: deleteTransactionId },
+    { _id: deleteTransactionId },
     function (err, docs) {
       if (err) {
         res.send("This " + err + "happened");
