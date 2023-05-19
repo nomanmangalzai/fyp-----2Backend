@@ -21,9 +21,9 @@ router.get(
 );
 router.delete(
   "/deleteReview/:id",
-  verifyToken,
-  isAuthorized,
-  isAdmin,
+  // verifyToken,
+  // isAuthorized,
+  // isAdmin,
   reviewController.deleteReview
 );
 router.get(

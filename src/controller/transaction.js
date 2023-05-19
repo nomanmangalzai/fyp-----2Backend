@@ -4,10 +4,12 @@ const transaction = require("../models/transaction");
 
 exports.postTransaction = async (req, res, next) => {
   console.log("THE POSTtRANSACTION API HAS BEEN HIT.");
-  console.log(req.body);
-  const { transactionID, status, oid, customerName, date } = req.body;
+  // console.log(req.body);
+  const { transactionID, status, oid, customerName, date, amount, phoneNo } =
+    req.body;
   //   const check = await transaction.find({ transactionId: TransactionId });
   // 1  //   const check = await users.findOne({ email: Email });
+  console.log(transactionID);
   try {
     const newTransaction = new transaction({
       transactionId: transactionID,
@@ -15,6 +17,8 @@ exports.postTransaction = async (req, res, next) => {
       oid: oid,
       customerName: customerName,
       date: date,
+      amount: amount,
+      phoneNo: phoneNo,
     });
 
     await newTransaction.save().then((result) => {
@@ -27,17 +31,24 @@ exports.postTransaction = async (req, res, next) => {
     });
   } catch (error) {
     console.log("ERROR = " + error.message);
-    return res
-      .status(403)
-      .json({ message: "A transaction with this key already exists" });
+    return res.status(403).json({
+      message: "Error while uploading transaction data",
+      errorMessage: error,
+    });
   }
 };
 
 exports.viewTransaction = async (req, res, next) => {
   console.log("VIEW TRANSACTIONS API HAS BEEN HIT.  ");
   try {
-    const transactions = await transaction.find({}, { _id: 0, __v: 0 });
-    res.send(transactions);
+    // const transactions = await transaction.find();
+    // console.log(transactions.customerName);
+    // res.send(transactions);
+
+    const results = await transaction.find({}, { __v: 0 });
+    const { customerName } = results;
+    console.log(customerName);
+    res.send(results);
   } catch (error) {
     console.log(error.message);
   }

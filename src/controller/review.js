@@ -56,8 +56,7 @@ exports.viewReviews = async (req, res, next) => {
   //good
   console.log("view reviews api called.");
   try {
-    const fetchedReviews = await review.find({}, { _id: 0, __v: 0 });
-    res.send(fetchedReviews);
+    const fetchedReviews = await review.find({});
   } catch (error) {
     console.log(error.message);
   }

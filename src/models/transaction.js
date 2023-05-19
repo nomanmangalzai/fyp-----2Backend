@@ -7,13 +7,17 @@ const transactionSchema = mongoose.Schema({
     required: true,
     unique: true,
   },
+  amount: {
+    type: Number,
+    required: true,
+  },
   status: {
-    type: Boolean,
+    type: String,
     required: true,
   },
   oid: {
     type: String,
-    required: true,
+    // required: true,
   },
   customerName: {
     type: String,

@@ -262,24 +262,18 @@ exports.productDescription = async (req, res, next) => {
 };
 
 exports.updateProduct = async (req, res, next) => {
-  //check nodem odules deletion
   console.log("UpdateProduct API has been hit.");
-  // mongoose.Schema.Types.Boolean.convertToFalse.add("Deactive");
-  // mongoose.Schema.Types.Boolean.convertToTrue.add("Active");
-
-  // console.log(req.body.productTitle);
-
-  // res.send({ result: "update" });
 
   //write update api code from United Top Tech
-  // let updatedId = req.params.id;
-  let deleteId = req.params.id;
-  const sku = req.body.sku;
+  let updatedId = req.params.id;
+  // let deleteId = req.params.id;
   //below are checks
   const checkProduct = await ImageModel.findOne({
     productTitle: req.body.productTitle,
   });
-  if (checkProduct) {
+
+  console.log(req.body.productTitle);
+  if (checkProduct && checkProduct != req.body.productTitle) {
     //await ImageModel.deleteMany({ productTitle: "coke" }); //this code is for deleteing
     // records of database
     return res.status(403).json({
@@ -289,7 +283,7 @@ exports.updateProduct = async (req, res, next) => {
 
   try {
     ImageModel.findOneAndUpdate(
-      { _id: deleteId },
+      { _id: updatedId },
       {
         // $set: req.body,
         $set: {
