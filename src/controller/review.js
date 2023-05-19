@@ -56,7 +56,8 @@ exports.viewReviews = async (req, res, next) => {
   //good
   console.log("view reviews api called.");
   try {
-    const fetchedReviews = await review.find({});
+    const fetchedReviews = await review.find();
+    return res.send(fetchedReviews);
   } catch (error) {
     console.log(error.message);
   }
@@ -64,8 +65,13 @@ exports.viewReviews = async (req, res, next) => {
 
 exports.deleteReview = async (req, res, next) => {
   console.log("Delete Review API has been called.");
-  let deleteReviewId = req.body.id;
-  review.deleteMany({ reviewId: deleteReviewId }, function (err, docs) {
+  let deleteReviewId = req.params.id;
+  const check = await review.findOne({ _id: deleteReviewId });
+  if (!check) {
+    return res.send("No review with given id");
+  }
+  //write a check here.
+  review.deleteOne({ _id: deleteReviewId }, function (err, docs) {
     if (err) {
       res.send("Error! You have entered wrong key.");
     } else {
