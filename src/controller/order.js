@@ -19,14 +19,14 @@ exports.postOrder = async (req, res, next) => {
     additionalComments,
     shippingMethod,
   } = req.body;
-  console.log(orderId);
+  // console.log(orderId);
   console.log(status);
-  const product = ImageModel.findOne({ _id: productId });
-  //stock-quantity
+  console.log(productId);
+  const product = await ImageModel.findOne({ _id: productId });
   if (productQuantity <= 0) {
     return res.send("please enter a positive number for quantity");
   }
-  product.stock - productQuantity;
+
   if (product.stock < 0) {
     return res.send(
       "Not enough products available. Decrease the quantity or contact the administration"
@@ -39,6 +39,10 @@ exports.postOrder = async (req, res, next) => {
   if (checkForDuplicay) {
     return res.status(403).json({ message: "Please Enter a unique orderId" });
   }
+  //stock minus quantity
+  const stock = product.stock;
+  product.stock = stock - productQuantity;
+  await product.save();
   const order = new orderSchema({
     orderId: orderId,
     productName: productName,
@@ -56,6 +60,7 @@ exports.postOrder = async (req, res, next) => {
   //save the record ="order" in database
   await order.save().then((result) => {
     res.status(201).json({
+      orderDetails: order,
       message: "Your order has been successfully stored.",
       //User: result,
     });
