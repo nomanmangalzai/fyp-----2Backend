@@ -56,7 +56,7 @@ const orderShema = mongoose.Schema({
   deliveryDate: {
     // when will the order be delivered
     type: String,
-    required: true,
+    // required: true,
   },
   paymentMethod: {
     type: String,
