@@ -13,6 +13,7 @@ const orderShema = mongoose.Schema({
       productQuantity: String,
       productImage: String,
       unitPrice: Number,
+      productImage: String,
     },
   ],
   shippingCharges: {
@@ -37,22 +38,21 @@ const orderShema = mongoose.Schema({
     // require: [true, "product name is required"],
   },
   status: {
-    type: [String],
+    type: String,
     default: ["pending"],
     //  required: true,
   },
   date: {
     //when user places order
-    type: [Date],
+    type: Date,
     default: Date.now,
     // required: true,
   },
   additionalComments: {
-    type: [String],
+    type: String,
   },
   shippingMethod: {
-    type: [String],
-    // required: true,
+    type: String, // required: true,
   },
   deliveryDate: {
     // when will the order be delivered

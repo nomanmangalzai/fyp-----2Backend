@@ -8,9 +8,7 @@ exports.postOrder = async (req, res, next) => {
   console.log("Congrats! The postOrder API has been hit.");
   const {
     orderId,
-    productName,
-    productId,
-    productQuantity,
+    orderItems,
     customerName,
     phoneNo,
     totalPrice,
@@ -21,16 +19,44 @@ exports.postOrder = async (req, res, next) => {
   } = req.body;
   // console.log(orderId);
   console.log(status);
-  console.log(productId);
-  const product = await ImageModel.findOne({ _id: productId });
-  if (productQuantity <= 0) {
-    return res.send("please enter a positive number for quantity");
-  }
+  console.log(orderItems[1].productId);
+  let products = [];
+  for (let i = 0; i < orderItems.length; i++) {
+    console.log(orderItems[i].productId);
 
-  if (product.stock < 0) {
-    return res.send(
-      "Not enough products available. Decrease the quantity or contact the administration"
-    );
+    products[i] = await ImageModel.findOne({ _id: orderItems[i].productId });
+    // Do something with the product...
+  }
+  let productQuantity = [];
+  for (let i = 0; i < orderItems.length; i++) {
+    productQuantity[i] = orderItems[i].productQuantity;
+    if (productQuantity <= 0) {
+      return res.send("Please enter a positive number for quantity");
+    }
+  }
+  console.log(productQuantity);
+  //
+  let productId = [];
+  for (let i = 0; i < orderItems.length; i++) {
+    productId[i] = orderItems[i].productId;
+    console.log("Product ID:", productId);
+  }
+  // if (product.stock < 0) {
+  //   return res.send(
+  //     "Not enough products available. Decrease the quantity or contact the administration"
+  //   );
+  // }
+
+  for (let i = 0; i < orderItems.length; i++) {
+    console.log(orderItems[i].productId);
+    products[i] = await ImageModel.findOne({ _id: orderItems[i].productId });
+    if (products[i].stock < 0) {
+      return res.send(
+        "Not enough products available. Decrease the quantity or contact the administration"
+      );
+    }
+
+    // products.push(product); // Add the product to the products array
   }
   // const stockMinusQuantity = await
   const checkForDuplicay = await orderSchema.findOne({
@@ -40,19 +66,36 @@ exports.postOrder = async (req, res, next) => {
     return res.status(403).json({ message: "Please Enter a unique orderId" });
   }
   //stock minus quantity
-  const stock = product.stock;
-  product.stock = stock - productQuantity;
-  //decrease quantity from product.stock
-  await product.save();
-  if (product.stock <= 0) {
-    product.stock = product.stock + productQuantity;
-    return res.send("Not enough products");
+  const stock = [];
+  for (let i = 0; i < orderItems.length; i++) {
+    const productStock = await ImageModel.findOne({
+      productName: orderItems[i].productName,
+    });
+    stock[i] = parseFloat(products[i].stock);
+    console.log(stock[i]);
   }
+  //temporary loop
+  for (let i = 0; i < orderItems.length; i++) {
+    console.log("products[i].stock)= " + products[i].stock);
+  }
+
+  for (let i = 0; i < orderItems.length; i++) {
+    products[i].stock = stock[i] - productQuantity[i];
+    await products[i].save();
+  }
+  //decrease quantity from product.stock
+  // await product.save();
+  for (let i = 0; i < orderItems.length; i++) {
+    if (products[i].stock < 0) {
+      console.log(i + "=" + orderItems[i].productQuantity);
+      products[i].stock = products[i].stock - orderItems[i].productQuantity;
+      return res.send("Not enough products");
+    }
+  }
+
   const order = new orderSchema({
     orderId: orderId,
-    productName: productName,
-    productId: productId,
-    productQuantity: productQuantity,
+    orderItems: orderItems,
     customerName: customerName,
     phoneNo: phoneNo,
     totalPrice: totalPrice,
