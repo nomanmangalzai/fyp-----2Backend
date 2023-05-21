@@ -19,7 +19,7 @@ exports.postOrder = async (req, res, next) => {
   } = req.body;
   // console.log(orderId);
   console.log(status);
-  console.log(orderItems[1].productId);
+  console.log(orderItems[0].productId);
   let products = [];
   for (let i = 0; i < orderItems.length; i++) {
     console.log(orderItems[i].productId);
