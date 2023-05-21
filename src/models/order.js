@@ -38,6 +38,7 @@ const orderShema = mongoose.Schema({
   },
   status: {
     type: String,
+    default: "pending",
     //  required: true,
   },
   date: {
