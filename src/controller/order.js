@@ -42,7 +42,12 @@ exports.postOrder = async (req, res, next) => {
   //stock minus quantity
   const stock = product.stock;
   product.stock = stock - productQuantity;
+  //decrease quantity from product.stock
   await product.save();
+  if (product.stock <= 0) {
+    product.stock = product.stock + productQuantity;
+    return res.send("Not enough products");
+  }
   const order = new orderSchema({
     orderId: orderId,
     productName: productName,

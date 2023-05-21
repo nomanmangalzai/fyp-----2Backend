@@ -39,12 +39,12 @@ const ImageSchema = mongoose.Schema({
   stock: {
     type: Number,
     required: true,
-    validate: {
-      validator: function (value) {
-        return value >= 0;
-      },
-      message: "Quantity must be greater than 0",
-    },
+    // validate: {
+    //   validator: function (value) {
+    //     return value >= 0;
+    //   },
+    //   message: "Quantity must be greater than 0",
+    // },
   },
   date: {
     type: Date,
