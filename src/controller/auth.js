@@ -427,7 +427,9 @@ const sendOTP = async (req, res, next) => {
         from: "+1 339 300 1794",
         to: phoneNo,
       })
-      .then((message) => console.log(`OTP sent successfully to ${phoneNo}`))
+      .then((message) =>
+        console.log(`OTP sent successfully to the given number`)
+      )
       .catch((error) => console.error(`Failed to send OTP: ${error}`));
   };
 
