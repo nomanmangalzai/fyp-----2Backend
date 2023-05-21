@@ -413,7 +413,7 @@ const sendOTP = async (req, res, next) => {
 
   //check
   const check = await User.findOne({ phoneNo: phoneNo });
-  if (!check) {
+  if (check) {
     return res.send("Please register your account first");
   }
   // Send the OTP via SMS
