@@ -16,6 +16,7 @@ exports.postOrder = async (req, res, next) => {
     totalPrice,
     status,
     date,
+    additionalComments,
     shippingMethod,
   } = req.body;
   console.log(orderId);
@@ -48,6 +49,7 @@ exports.postOrder = async (req, res, next) => {
     totalPrice: totalPrice,
     status: status,
     date: date,
+    additionalComments: additionalComments,
     shippingMethod: shippingMethod,
   });
 
