@@ -489,9 +489,9 @@ const buyerLogin = async (req, res, next) => {
   const { phoneNo, otpByUser, otpAlreadySend } = req.body;
 
   //validate
-  const validateOTP = (otpByUser, otpAlreadySend) => {
-    return userEnteredOTP === otp; //otp is one which we generate and send to the user
-  };
+  // const validateOTP = (otpByUser, otpAlreadySend) => {
+  //   return userEnteredOTP === otp; //otp is one which we generate and send to the user
+  // };
   const sendToken = async (phoneNo) => {
     // sendOTP(phoneNo);
 
@@ -522,10 +522,10 @@ const buyerLogin = async (req, res, next) => {
       res.status(500).send("Server error");
     }
   };
-  validateOTP(otpByUser, otpAlreadySend);
-  if (validateOTP === true) {
-    sendToken(phoneNo);
-  }
+  // validateOTP(otpByUser, otpAlreadySend);
+  // if (validateOTP === true) {
+  sendToken(phoneNo);
+  // }
 };
 const customerAccountManagement = async (req, res, next) => {
   console.log("Customer account management api called");
