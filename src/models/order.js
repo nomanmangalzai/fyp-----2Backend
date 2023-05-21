@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const orderShema = mongoose.Schema({
   orderId: {
-    type: Number,
+    type: String,
     unique: true,
     //required: true,
   },
