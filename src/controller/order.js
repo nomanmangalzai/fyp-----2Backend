@@ -110,7 +110,7 @@ exports.viewSingleOrder = async (req, res, next) => {
   const id = req.params.id;
   console.log(id);
   try {
-    const singleOrder = await orderSchema.findOne({ _id: id });
+    const singleOrder = await orderSchema.findOne({ orderId: id });
     res.send(singleOrder);
   } catch (error) {
     res.send("wrong order id entered");
