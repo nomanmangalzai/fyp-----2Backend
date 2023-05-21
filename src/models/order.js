@@ -4,7 +4,7 @@ const orderShema = mongoose.Schema({
   orderId: {
     type: Number,
     unique: true,
-    required: true,
+    //required: true,
   },
   productName: {
     type: String,
@@ -12,25 +12,25 @@ const orderShema = mongoose.Schema({
   },
   productId: {
     type: String,
-    require: [true, "product id is required"],
+    // require: [true, "product id is required"],
   },
   productQuantity: {
     type: Number,
-    require: [true, "product name is required"],
+    // require: [true, "product name is required"],
   },
   customerName: {
     type: String,
-    required: true,
+    //   required: true,
     //type: mongoose.Schema.Types.ObjectId,
     //ref: "orderItem"
   },
   phoneNo: {
     type: String,
-    required: true,
+    //  required: true,
   },
   totalPrice: {
     type: Number,
-    required: true,
+    // required: true,
   },
   customerAddress: {
     type: String,
@@ -38,7 +38,7 @@ const orderShema = mongoose.Schema({
   },
   status: {
     type: String,
-    required: true,
+    //  required: true,
   },
   date: {
     //when user places order
