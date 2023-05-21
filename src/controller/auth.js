@@ -21,7 +21,7 @@ cloudinary.config({
 
 //twilio setup
 const accountSid = "ACc2bf951ade890fde04add6a94cf7e33a";
-const authToken = "d385c7741b05505be167ebb4db86310a";
+const authToken = "1a8e771c5f04b8eb9bd38ce678595799";
 const client = require("twilio")(accountSid, authToken);
 const generateOTP = () => {
   const digits = "0123456789";
@@ -180,15 +180,8 @@ const adminAccountManagement = async (req, res, next) => {
 
 //Below are customer APIs
 const customerSignup = async (req, res, next) => {
-  const {
-    firstName,
-    lastName,
-    email,
-    password,
-    confirmPassword,
-    phoneNo,
-    age,
-  } = req.body;
+  const { firstName, lastName, email, phoneNo, town, streetNo, houseNo, age } =
+    req.body;
   console.log(firstName);
   console.log("signup api has been hit");
   //check password adn confirmPassword
@@ -212,7 +205,7 @@ const customerSignup = async (req, res, next) => {
     });
   }
 
-  const userExists = await User.findOne({ email });
+  const userExists = await User.findOne({ phoneNo });
   const isEmailValid = emailValidator.is_email_valid(email);
   if (!isEmailValid) {
     return res
@@ -223,16 +216,18 @@ const customerSignup = async (req, res, next) => {
   if (userExists) {
     return res
       .status(400)
-      .json({ message: "User with this email is already registered." });
+      .json({ message: "User with this phone number is already registered." });
   }
 
   const newUser = new User({
     firstName: firstName,
     lastName: lastName,
     email: email,
-    password: password,
-    age: age,
     phoneNo: phoneNo,
+    town: town,
+    streetNo,
+    houseNo,
+    age: age,
   });
 
   newUser.save((err, user) => {
@@ -306,11 +301,44 @@ const customerLogin = async (req, res, next) => {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  // const { phoneNo, password } = req.body;
-  const { phoneNo, otp } = req.body;
-  const checkDuplicateAccount = await User.findOne({ phoneNo });
-  if (checkDuplicateAccount) {
-    return res.send("This phone number is already registered");
+  const {
+    firstName,
+    lastName,
+    email,
+    phoneNo,
+    town,
+    streetNo,
+    houseNo,
+    age,
+    otp,
+  } = req.body;
+  console.log(firstName);
+
+  //if user not registered, call signup function
+  const checkSignup = await User.findOne({ phoneNo });
+  //signUp function
+  const signUp = (phoneNo, firstName, email, town, streetNo, houseNo) => {
+    console.log("The signup function has been called");
+    const newUser = new User({
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      phoneNo: phoneNo,
+      town: town,
+      streetNo,
+      houseNo,
+      age: age,
+    });
+
+    newUser.save((err, user) => {
+      if (err) return res.status(500).send(err);
+      res.send("User has been successfully registered");
+      registerSendToken(phoneNo);
+    });
+  };
+  if (!checkSignup) {
+    console.log("checksignup check called");
+    signUp(phoneNo, firstName, email, town, streetNo, houseNo);
   }
 
   //validate otp function
@@ -319,6 +347,8 @@ const customerLogin = async (req, res, next) => {
   };
   //send token
   const registerSendToken = async (phoneNo) => {
+    sendOTP(phoneNo);
+
     try {
       let user = await User.findOne({ phoneNo });
 
@@ -326,20 +356,14 @@ const customerLogin = async (req, res, next) => {
         return res.status(400).json({ message: "Invalid Credentials" });
       }
 
-      // const isMatch = await bcrypt.compare(password, user.password);
-      // if (!isMatch) {
-      //   return res.status(400).json({ message: "Invalid Credentials" });
-      // }
-
       const payload = {
         user: {
           id: user.id,
           phoneNo: user.phoneNo,
         },
       };
-      // let userInfo = await User.find({ phoneNo: phoneNo });
 
-      jwt.sign(payload, secret, { expiresIn: "2 days" }, (err, token) => {
+      jwt.sign(payload, secret, { expiresIn: "5 days" }, (err, token) => {
         if (err) throw err;
         res.json({
           token,
@@ -354,6 +378,7 @@ const customerLogin = async (req, res, next) => {
   };
   //check if login has been recalled for OTP validation
   if (otp != null) {
+    console.log("if (otp != null) called");
     validateOTP(otp);
     if (validateOTP() === true) {
       registerSendToken(phoneNo);
@@ -361,70 +386,20 @@ const customerLogin = async (req, res, next) => {
   }
   //twilio otp
   // Send the OTP via SMS
-  const sendOTP = (phoneNumber) => {
+  const sendOTP = (phoneNo) => {
     const otp = generateOTP();
 
     client.messages
       .create({
         body: `Your OTP is: ${otp}`,
         from: "+1 339 300 1794",
-        to: "+923053078123",
+        to: phoneNo,
       })
       .then((message) => console.log(`OTP sent successfully to ${phoneNo}`))
       .catch((error) => console.error(`Failed to send OTP: ${error}`));
   };
 
-  // Usage
-  // const phoneNumber = "+923053078123"; // Replace with the recipient's phone number
-  // sendOTP(phoneNumber);
-
-  //twilio otp
-  // if (phoneNo.length != 10) {
-  //   return res.send("phone number length should be 10");
-  // }
   sendOTP(phoneNo);
-
-  //validate OTP
-
-  //otp validation and login +token sending
-
-  //register and send token + login
-
-  // try {
-  //   let user = await User.findOne({ phoneNo });
-
-  //   if (!user) {
-  //     return res.status(400).json({ message: "Invalid Credentials" });
-  //   }
-
-  //   const isMatch = await bcrypt.compare(password, user.password);
-  //   if (!isMatch) {
-  //     return res.status(400).json({ message: "Invalid Credentials" });
-  //   }
-
-  //   const payload = {
-  //     user: {
-  //       id: user.id,
-  //       phoneNo: user.phoneNo,
-  //     },
-  //   };
-  //   let userInfo = await User.find(
-  //     { phoneNo: phoneNo },
-  //     { __v: 0, password: 0 }
-  //   );
-
-  //   jwt.sign(payload, secret, { expiresIn: "2 days" }, (err, token) => {
-  //     if (err) throw err;
-  //     res.json({
-  //       token,
-  //       User: userInfo,
-  //       message: "Congratulations! You have been successfully logged in",
-  //     });
-  //   });
-  // } catch (err) {
-  //   console.error(err.message);
-  //   res.status(500).send("Server error");
-  // }
 };
 const customerAccountManagement = async (req, res, next) => {
   console.log("Customer account management api called");

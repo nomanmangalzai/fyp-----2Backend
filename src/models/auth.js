@@ -5,18 +5,18 @@ const userSchema = new mongoose.Schema({
   firstName: String,
   lastName: String,
   email: { type: String, unique: true },
-  password: { type: String, required: true },
+  password: { type: String },
   phoneNo: {
     type: String,
     unique: true,
-    // required: ["Please provide a phone number"],
+    required: ["Please provide a phone number"],
   },
   town: {
     type: String,
     required: [true, "please enter your town name"],
   },
   streetNo: {
-    type: String,
+    type: Number,
     required: [true, "please enter your town street number"],
   },
   houseNo: {

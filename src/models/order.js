@@ -41,6 +41,7 @@ const orderShema = mongoose.Schema({
     required: true,
   },
   date: {
+    //when user places order
     type: Date,
     default: Date.now,
     // required: true,
@@ -51,6 +52,14 @@ const orderShema = mongoose.Schema({
   shippingMethod: {
     type: String,
     // required: true,
+  },
+  deliveryDate: {
+    // when will the order be delivered
+    type: String,
+    required: true,
+  },
+  paymentMethod: {
+    type: String,
   },
 });
 module.exports = orderModel = mongoose.model("customersOrders", orderShema);
