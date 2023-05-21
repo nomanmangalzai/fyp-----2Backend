@@ -290,11 +290,155 @@ const customerSignup = async (req, res, next) => {
 //customerAccountManagement
 
 //login with phone number.
-const customerLogin = async (req, res, next) => {
-  console.log("customer login api is called");
+// const customerLogin = async (req, res, next) => {
+//   console.log("customer login api is called");
 
-  //then don't send otp, rather send token
+//   //then don't send otp, rather send token
 
+//   const errors = validationResult(req);
+
+//   if (!errors.isEmpty()) {
+//     return res.status(400).json({ errors: errors.array() });
+//   }
+
+//   const {
+//     firstName,
+//     lastName,
+//     email,
+//     phoneNo,
+//     town,
+//     streetNo,
+//     houseNo,
+//     age,
+//     otp,
+//   } = req.body;
+//   console.log(firstName);
+
+//   //if user not registered, call signup function
+//   const checkSignup = await User.findOne({ phoneNo });
+//   //signUp function
+//   const signUp = (phoneNo, firstName, email, town, streetNo, houseNo) => {
+//     console.log("The signup function has been called");
+//     const newUser = new User({
+//       firstName: firstName,
+//       lastName: lastName,
+//       email: email,
+//       phoneNo: phoneNo,
+//       town: town,
+//       streetNo,
+//       houseNo,
+//       age: age,
+//     });
+
+//     newUser.save((err, user) => {
+//       if (err) return res.status(500).send(err);
+//       res.send("User has been successfully registered");
+//       registerSendToken(phoneNo);
+//     });
+//   };
+//   if (!checkSignup) {
+//     console.log("checksignup check called");
+//     signUp(phoneNo, firstName, email, town, streetNo, houseNo);
+//   }
+
+//   //validate otp function
+//   const validateOTP = (userEnteredOTP, otp) => {
+//     return userEnteredOTP === otp; //otp is one which we generate and send to the user
+//   };
+//   //send token
+//   const registerSendToken = async (phoneNo) => {
+//     // sendOTP(phoneNo);
+
+//     try {
+//       let user = await User.findOne({ phoneNo });
+
+//       if (!user) {
+//         return res.status(400).json({ message: "Invalid Credentials" });
+//       }
+
+//       const payload = {
+//         user: {
+//           id: user.id,
+//           phoneNo: user.phoneNo,
+//         },
+//       };
+
+//       jwt.sign(payload, secret, { expiresIn: "5 days" }, (err, token) => {
+//         if (err) throw err;
+//         res.json({
+//           token,
+//           // User: userInfo,
+//           message: "Congratulations! You have been successfully logged in",
+//         });
+//       });
+//     } catch (error) {
+//       console.error(error.message);
+//       res.status(500).send("Server error");
+//     }
+//   };
+//   //check if login has been recalled for OTP validation
+//   if (otp != null) {
+//     console.log("if (otp != null) called");
+//     validateOTP(otp);
+//     console.log("otp validated");
+//     // res.send("OTP has successfully been sent.");
+//     if (validateOTP() === true) {
+//       registerSendToken(phoneNo);
+//     }
+//   }
+//   //twilio otp
+//   // Send the OTP via SMS
+//   const sendOTP = (phoneNo) => {
+//     console.log("sendOTP() called");
+//     const otp = generateOTP();
+
+//     client.messages
+//       .create({
+//         body: `Your OTP is: ${otp}`,
+//         from: "+1 339 300 1794",
+//         to: phoneNo,
+//       })
+//       .then((message) => console.log(`OTP sent successfully to ${phoneNo}`))
+//       .catch((error) => console.error(`Failed to send OTP: ${error}`));
+//   };
+
+//   sendOTP(phoneNo);
+// };
+
+//
+
+//below we send otp
+const sendOTP = async (req, res, next) => {
+  const { phoneNo } = req.body;
+
+  //check
+  const check = await User.findOne({ phoneNo: phoneNo });
+  if (!check) {
+    return res.send("Please register your account first");
+  }
+  // Send the OTP via SMS
+  const sendOTP = (phoneNo) => {
+    console.log("sendOTP() called");
+    const otp = generateOTP();
+
+    client.messages
+      .create({
+        body: `Your OTP is: ${otp}`,
+        from: "+1 339 300 1794",
+        to: phoneNo,
+      })
+      .then((message) => console.log(`OTP sent successfully to ${phoneNo}`))
+      .catch((error) => console.error(`Failed to send OTP: ${error}`));
+  };
+
+  sendOTP(phoneNo);
+};
+
+//buyerSignup
+const buyerSignup = async (req, res, next) => {
+  console.log("buyerSignup API called");
+
+  //signup
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -314,9 +458,6 @@ const customerLogin = async (req, res, next) => {
   } = req.body;
   console.log(firstName);
 
-  //if user not registered, call signup function
-  const checkSignup = await User.findOne({ phoneNo });
-  //signUp function
   const signUp = (phoneNo, firstName, email, town, streetNo, houseNo) => {
     console.log("The signup function has been called");
     const newUser = new User({
@@ -336,17 +477,20 @@ const customerLogin = async (req, res, next) => {
       registerSendToken(phoneNo);
     });
   };
-  if (!checkSignup) {
-    console.log("checksignup check called");
-    signUp(phoneNo, firstName, email, town, streetNo, houseNo);
-  }
 
-  //validate otp function
-  const validateOTP = (userEnteredOTP, otp) => {
+  signUp(phoneNo, firstName, email, town, streetNo, houseNo);
+};
+
+//buyerLogin
+const buyerLogin = async (req, res, next) => {
+  console.log("buyerLogin API has been called");
+  const { phoneNo, otpByUser, otpAlreadySend } = req.body;
+
+  //validate
+  const validateOTP = (otpByUser, otpAlreadySend) => {
     return userEnteredOTP === otp; //otp is one which we generate and send to the user
   };
-  //send token
-  const registerSendToken = async (phoneNo) => {
+  const sendToken = async (phoneNo) => {
     // sendOTP(phoneNo);
 
     try {
@@ -376,32 +520,10 @@ const customerLogin = async (req, res, next) => {
       res.status(500).send("Server error");
     }
   };
-  //check if login has been recalled for OTP validation
-  if (otp != null) {
-    console.log("if (otp != null) called");
-    validateOTP(otp);
-    res.send("OTP has successfully been sent.");
-    if (validateOTP() === true) {
-      registerSendToken(phoneNo);
-    }
+  validateOTP(otpByUser, otpAlreadySend);
+  if (validateOTP === true) {
+    sendToken(phoneNo);
   }
-  //twilio otp
-  // Send the OTP via SMS
-  const sendOTP = (phoneNo) => {
-    console.log("sendOTP() called");
-    const otp = generateOTP();
-
-    client.messages
-      .create({
-        body: `Your OTP is: ${otp}`,
-        from: "+1 339 300 1794",
-        to: phoneNo,
-      })
-      .then((message) => console.log(`OTP sent successfully to ${phoneNo}`))
-      .catch((error) => console.error(`Failed to send OTP: ${error}`));
-  };
-
-  sendOTP(phoneNo);
 };
 const customerAccountManagement = async (req, res, next) => {
   console.log("Customer account management api called");
@@ -464,8 +586,11 @@ module.exports = {
   signup,
   login,
   adminAccountManagement,
-  customerLogin,
+  // customerLogin,
   customerSignup,
   customerAccountManagement,
+  buyerLogin,
+  buyerSignup,
+  sendOTP,
 };
 // const phoneNumber = "+923053078123"; // Replace with the recipient's phone number
