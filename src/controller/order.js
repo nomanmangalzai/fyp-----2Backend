@@ -84,17 +84,7 @@ exports.deleteOrder = async (req, res, next) => {
 exports.viewOrders = async (req, res, next) => {
   console.log("Congratulatios my brother! The  view orders API has been hit.");
   try {
-    const results = await orderSchema.find(
-      {},
-      {
-        orderId: 1,
-        customerName: 1,
-        phoneNo: 1,
-        totalPrice: 1,
-        status: 1,
-        date: 1,
-      }
-    );
+    const results = await orderSchema.find({});
     res.send(results);
   } catch (error) {
     console.log(
