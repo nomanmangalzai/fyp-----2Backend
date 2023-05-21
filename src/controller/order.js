@@ -88,7 +88,8 @@ exports.postOrder = async (req, res, next) => {
   for (let i = 0; i < orderItems.length; i++) {
     if (products[i].stock < 0) {
       console.log(i + "=" + orderItems[i].productQuantity);
-      products[i].stock = products[i].stock - orderItems[i].productQuantity;
+      products[i].stock = products[i].stock + orderItems[i].productQuantity;
+      await products[i].save();
       return res.send("Not enough products");
     }
   }
