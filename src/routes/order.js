@@ -12,6 +12,8 @@ router.get(
   // isAdmin,
   orderControler.viewOrders
 );
+//single order route is below
+router.get("/view-single-order/:id", orderControler.viewSingleOrder);
 router.post(
   "/postOrder",
   // verifyToken,

@@ -387,6 +387,7 @@ const customerLogin = async (req, res, next) => {
   //twilio otp
   // Send the OTP via SMS
   const sendOTP = (phoneNo) => {
+    console.log("sendOTP() called");
     const otp = generateOTP();
 
     client.messages

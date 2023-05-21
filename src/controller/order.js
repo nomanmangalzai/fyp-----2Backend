@@ -102,6 +102,19 @@ exports.viewOrders = async (req, res, next) => {
   }
 };
 
+//single order api is below
+exports.viewSingleOrder = async (req, res, next) => {
+  console.log("viewSingleOrder API called");
+  const id = req.params.id;
+  console.log(id);
+  try {
+    const singleOrder = await orderSchema.findOne({ _id: id });
+    res.send(singleOrder);
+  } catch (error) {
+    res.send("wrong order id entered");
+  }
+};
+
 exports.searchOrders = async (req, res, next) => {
   console.log("The filter products API has been called.");
   // const { totalPrice } = req.query.totalPrice;
