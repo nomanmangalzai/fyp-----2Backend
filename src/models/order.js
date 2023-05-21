@@ -2,9 +2,21 @@ const mongoose = require("mongoose");
 
 const orderShema = mongoose.Schema({
   orderId: {
-    type: String,
+    type: Number,
     unique: true,
     required: true,
+  },
+  productName: {
+    type: String,
+    require: [true, "product name is required"],
+  },
+  productId: {
+    type: String,
+    require: [true, "product id is required"],
+  },
+  productQuantity: {
+    type: Number,
+    require: [true, "product name is required"],
   },
   customerName: {
     type: String,
@@ -20,6 +32,10 @@ const orderShema = mongoose.Schema({
     type: Number,
     required: true,
   },
+  customerAddress: {
+    type: String,
+    // require: [true, "product name is required"],
+  },
   status: {
     type: String,
     required: true,
@@ -27,6 +43,13 @@ const orderShema = mongoose.Schema({
   date: {
     type: Date,
     default: Date.now,
+    // required: true,
+  },
+  additionalComments: {
+    type: String,
+  },
+  shippingMethod: {
+    type: String,
     // required: true,
   },
 });

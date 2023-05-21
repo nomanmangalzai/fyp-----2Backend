@@ -2,14 +2,36 @@ const express = require("express");
 const res = require("express/lib/response");
 const order = require("../models/order");
 const orderSchema = require("../models/order");
+const ImageModel = require("../models/product");
 
 exports.postOrder = async (req, res, next) => {
   console.log("Congrats! The postOrder API has been hit.");
-  const { orderId, customerName, phoneNo, totalPrice, status, date } =
-    req.body;
+  const {
+    orderId,
+    productName,
+    productId,
+    productQuantity,
+    customerName,
+    phoneNo,
+    totalPrice,
+    status,
+    date,
+    shippingMethod,
+  } = req.body;
   console.log(orderId);
   console.log(status);
-
+  const product = ImageModel.findOne({ _id: productId });
+  //stock-quantity
+  if (productQuantity <= 0) {
+    return res.send("please enter a positive number for quantity");
+  }
+  product.stock - productQuantity;
+  if (product.stock < 0) {
+    return res.send(
+      "Not enough products available. Decrease the quantity or contact the administration"
+    );
+  }
+  // const stockMinusQuantity = await
   const checkForDuplicay = await orderSchema.findOne({
     orderId: orderId,
   });
@@ -18,11 +40,15 @@ exports.postOrder = async (req, res, next) => {
   }
   const order = new orderSchema({
     orderId: orderId,
+    productName: productName,
+    productId: productId,
+    productQuantity: productQuantity,
     customerName: customerName,
     phoneNo: phoneNo,
     totalPrice: totalPrice,
     status: status,
     date: date,
+    shippingMethod: shippingMethod,
   });
 
   //save the record ="order" in database
@@ -40,7 +66,6 @@ exports.deleteOrder = async (req, res, next) => {
   // const OID = orderId
   console.log("orderid = " + orderId);
   orderSchema.findOneAndDelete({ orderId: orderId }, function (error, docs) {
-
     if (error) {
       res.send("Error occured.");
     } else {

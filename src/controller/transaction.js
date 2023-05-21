@@ -9,7 +9,7 @@ exports.postTransaction = async (req, res, next) => {
     req.body;
   //   const check = await transaction.find({ transactionId: TransactionId });
   // 1  //   const check = await users.findOne({ email: Email });
-  console.log(transactionID);
+  // console.log(transactionID);
   try {
     const newTransaction = new transaction({
       transactionId: transactionId,
@@ -25,7 +25,7 @@ exports.postTransaction = async (req, res, next) => {
       res.status(201).json({
         message:
           "The transaction with id = " +
-          transactionID +
+          transactionId +
           " has been successfully completed.",
       });
     });
@@ -41,8 +41,10 @@ exports.postTransaction = async (req, res, next) => {
 exports.viewTransaction = async (req, res, next) => {
   console.log("VIEW TRANSACTIONS API HAS BEEN HIT.  ");
   try {
-    const transactions = await transaction.find();
-    console.log(transactions);
+    // const transactions = await transaction.find();
+    const transactions = await transaction.find({}, { __v: 0 });
+
+    console.log(transactions.customerName);
     res.json(transactions);
   } catch (error) {
     console.log(error.message);

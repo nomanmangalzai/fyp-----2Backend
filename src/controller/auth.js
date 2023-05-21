@@ -19,8 +19,22 @@ cloudinary.config({
   api_secret: "8VLn1vP3ZUio2ksC7_oYKv7o4Ks",
 });
 
+//twilio setup
+const accountSid = "ACc2bf951ade890fde04add6a94cf7e33a";
+const authToken = "d385c7741b05505be167ebb4db86310a";
+const client = require("twilio")(accountSid, authToken);
+const generateOTP = () => {
+  const digits = "0123456789";
+  let otp = "";
+  for (let i = 0; i < 6; i++) {
+    otp += digits[Math.floor(Math.random() * 10)];
+  }
+  return otp;
+};
+
 const login = async (req, res, next) => {
   console.log("signin api has been hit");
+  sendTextMessage();
 
   const errors = validationResult(req);
 
@@ -282,7 +296,9 @@ const customerSignup = async (req, res, next) => {
 
 //login with phone number.
 const customerLogin = async (req, res, next) => {
-  console.log("user login api is called");
+  console.log("customer login api is called");
+
+  //then don't send otp, rather send token
 
   const errors = validationResult(req);
 
@@ -290,46 +306,125 @@ const customerLogin = async (req, res, next) => {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const { phoneNo, password } = req.body;
-  if (phoneNo.length != 10) {
-    return res.send("phone number length should be 10");
+  // const { phoneNo, password } = req.body;
+  const { phoneNo, otp } = req.body;
+  const checkDuplicateAccount = await User.findOne({ phoneNo });
+  if (checkDuplicateAccount) {
+    return res.send("This phone number is already registered");
   }
 
-  try {
-    let user = await User.findOne({ phoneNo });
+  //validate otp function
+  const validateOTP = (userEnteredOTP, otp) => {
+    return userEnteredOTP === otp; //otp is one which we generate and send to the user
+  };
+  //send token
+  const registerSendToken = async (phoneNo) => {
+    try {
+      let user = await User.findOne({ phoneNo });
 
-    if (!user) {
-      return res.status(400).json({ message: "Invalid Credentials" });
-    }
+      if (!user) {
+        return res.status(400).json({ message: "Invalid Credentials" });
+      }
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: "Invalid Credentials" });
-    }
+      // const isMatch = await bcrypt.compare(password, user.password);
+      // if (!isMatch) {
+      //   return res.status(400).json({ message: "Invalid Credentials" });
+      // }
 
-    const payload = {
-      user: {
-        id: user.id,
-        phoneNo: user.phoneNo,
-      },
-    };
-    let userInfo = await User.find(
-      { phoneNo: phoneNo },
-      { __v: 0, password: 0 }
-    );
+      const payload = {
+        user: {
+          id: user.id,
+          phoneNo: user.phoneNo,
+        },
+      };
+      // let userInfo = await User.find({ phoneNo: phoneNo });
 
-    jwt.sign(payload, secret, { expiresIn: "2 days" }, (err, token) => {
-      if (err) throw err;
-      res.json({
-        token,
-        User: userInfo,
-        message: "Congratulations! You have been successfully logged in",
+      jwt.sign(payload, secret, { expiresIn: "2 days" }, (err, token) => {
+        if (err) throw err;
+        res.json({
+          token,
+          // User: userInfo,
+          message: "Congratulations! You have been successfully logged in",
+        });
       });
-    });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send("Server error");
+    }
+  };
+  //check if login has been recalled for OTP validation
+  if (otp != null) {
+    validateOTP(otp);
+    if (validateOTP() === true) {
+      registerSendToken(phoneNo);
+    }
   }
+  //twilio otp
+  // Send the OTP via SMS
+  const sendOTP = (phoneNumber) => {
+    const otp = generateOTP();
+
+    client.messages
+      .create({
+        body: `Your OTP is: ${otp}`,
+        from: "+1 339 300 1794",
+        to: "+923053078123",
+      })
+      .then((message) => console.log(`OTP sent successfully to ${phoneNo}`))
+      .catch((error) => console.error(`Failed to send OTP: ${error}`));
+  };
+
+  // Usage
+  // const phoneNumber = "+923053078123"; // Replace with the recipient's phone number
+  // sendOTP(phoneNumber);
+
+  //twilio otp
+  // if (phoneNo.length != 10) {
+  //   return res.send("phone number length should be 10");
+  // }
+  sendOTP(phoneNo);
+
+  //validate OTP
+
+  //otp validation and login +token sending
+
+  //register and send token + login
+
+  // try {
+  //   let user = await User.findOne({ phoneNo });
+
+  //   if (!user) {
+  //     return res.status(400).json({ message: "Invalid Credentials" });
+  //   }
+
+  //   const isMatch = await bcrypt.compare(password, user.password);
+  //   if (!isMatch) {
+  //     return res.status(400).json({ message: "Invalid Credentials" });
+  //   }
+
+  //   const payload = {
+  //     user: {
+  //       id: user.id,
+  //       phoneNo: user.phoneNo,
+  //     },
+  //   };
+  //   let userInfo = await User.find(
+  //     { phoneNo: phoneNo },
+  //     { __v: 0, password: 0 }
+  //   );
+
+  //   jwt.sign(payload, secret, { expiresIn: "2 days" }, (err, token) => {
+  //     if (err) throw err;
+  //     res.json({
+  //       token,
+  //       User: userInfo,
+  //       message: "Congratulations! You have been successfully logged in",
+  //     });
+  //   });
+  // } catch (err) {
+  //   console.error(err.message);
+  //   res.status(500).send("Server error");
+  // }
 };
 const customerAccountManagement = async (req, res, next) => {
   console.log("Customer account management api called");
@@ -387,6 +482,7 @@ const customerAccountManagement = async (req, res, next) => {
     return res.status(500).json({ message: "Internal Server error", error });
   }
 };
+
 module.exports = {
   signup,
   login,
@@ -395,3 +491,4 @@ module.exports = {
   customerSignup,
   customerAccountManagement,
 };
+// const phoneNumber = "+923053078123"; // Replace with the recipient's phone number

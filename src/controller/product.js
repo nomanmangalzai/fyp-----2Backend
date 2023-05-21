@@ -25,9 +25,7 @@ cloudinary.config({
 exports.testPostProduct = async (req, res, next) => {
   // ImageModel.deleteMany();
   //active and unactive
-  mongoose.Schema.Types.Boolean.convertToTrue.add("Active");
-  mongoose.Schema.Types.Boolean.convertToFalse.add("Deactive");
-  //
+
   //
   // duplicateProduct = ImageModel.findOne({ productTitle: req.body.productTitle })
   if (await ImageModel.findOne({ productTitle: req.body.productTitle })) {
@@ -57,7 +55,7 @@ exports.testPostProduct = async (req, res, next) => {
       status: req.body.status,
       tag: req.body.tag,
       description: req.body.description,
-      quantity: req.body.quantity,
+      stock: req.body.stock,
       date: req.body.date,
       category: req.body.category,
       subcategory: req.body.subcategory,
