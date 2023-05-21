@@ -347,7 +347,7 @@ const customerLogin = async (req, res, next) => {
   };
   //send token
   const registerSendToken = async (phoneNo) => {
-    sendOTP(phoneNo);
+    // sendOTP(phoneNo);
 
     try {
       let user = await User.findOne({ phoneNo });
@@ -380,6 +380,7 @@ const customerLogin = async (req, res, next) => {
   if (otp != null) {
     console.log("if (otp != null) called");
     validateOTP(otp);
+    res.send("OTP has successfully been sent.");
     if (validateOTP() === true) {
       registerSendToken(phoneNo);
     }
