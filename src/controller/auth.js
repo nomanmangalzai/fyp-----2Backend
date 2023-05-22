@@ -33,54 +33,7 @@ const generateOTP = () => {
   return otp;
 };
 
-const login = async (req, res, next) => {
-  console.log("signin api has been hit");
-
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
-  const { email, password } = req.body;
-
-  try {
-    let user = await adminSchema.findOne({ email });
-
-    if (!user) {
-      console.log("if (!user) { called");
-      return res.status(400).json({ message: "Invalid Credentials" });
-    }
-
-    // const isMatch = await bcrypt.compare(password, user.password);
-    // if (!isMatch) {
-    //   return res.status(400).json({ message: "Invalid Credentials" });
-    // }
-    if (password != user.password) {
-      return res.status(400).json({ message: "Invalid Credentials" });
-    }
-
-    const payload = {
-      user: {
-        id: user.id,
-      },
-    };
-    let userInfo = await adminSchema.find({ email: email });
-
-    jwt.sign(payload, secret, { expiresIn: "5 days" }, (err, token) => {
-      if (err) throw err;
-      res.json({
-        token,
-        User: userInfo,
-        message: "Congratulations! You have been successfully logged in",
-      });
-    });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
-  }
-};
-
+//signup function is below
 const signup = async (req, res, next) => {
   const { userName, email, password, confirmPassword, registeredAt } = req.body;
   console.log(userName);
@@ -131,6 +84,53 @@ const signup = async (req, res, next) => {
     res.status(201).json({ message: "User registered successfully." });
   });
 };
+const login = async (req, res, next) => {
+  console.log("signin api has been hit");
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { email, password } = req.body;
+
+  try {
+    let user = await adminSchema.findOne({ email });
+
+    if (!user) {
+      console.log("if (!user) { called");
+      return res.status(400).json({ message: "Invalid Credentials" });
+    }
+
+    // const isMatch = await bcrypt.compare(password, user.password);
+    // if (!isMatch) {
+    //   return res.status(400).json({ message: "Invalid Credentials" });
+    // }
+    if (password != user.password) {
+      return res.status(400).json({ message: "Invalid Credentials" });
+    }
+
+    const payload = {
+      user: {
+        id: user.id,
+      },
+    };
+    let userInfo = await adminSchema.find({ email: email });
+
+    jwt.sign(payload, secret, { expiresIn: "5 days" }, (err, token) => {
+      if (err) throw err;
+      res.json({
+        token,
+        User: userInfo,
+        message: "Congratulations! You have been successfully logged in",
+      });
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server error");
+  }
+};
 
 const adminAccountManagement = async (req, res, next) => {
   console.log("admin account management api called");
@@ -140,24 +140,19 @@ const adminAccountManagement = async (req, res, next) => {
 
   console.log(userId);
   try {
-    const { firstName, lastName, email, phoneNo, age } = req.body;
+    const { userName, email, password } = req.body;
     const userUpdateInformation = await User.findByIdAndUpdate(
       {
         _id: userId,
       },
       {
-        firstName: firstName,
-        lastName: lastName,
+        userName: userName,
         email: email,
-        phoneNo: phoneNo,
-        age: age,
+        password: password,
       },
       { new: true }
     );
-    const fetchUpdateInformation = await User.findOne(
-      { _id: userId },
-      { __v: 0, password: 0, _id: 0 }
-    );
+    const fetchUpdateInformation = await User.findOne({ _id: userId });
     //  let userInfo = await User.find(
     //   { email: email },
     //   { __v: 0, password: 0, _id: 0 }
