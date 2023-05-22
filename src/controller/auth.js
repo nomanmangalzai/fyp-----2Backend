@@ -414,6 +414,7 @@ const sendOTP = async (req, res, next) => {
   //check
   const check = await User.findOne({ phoneNo: phoneNo });
   if (!check) {
+    console.log("  if (!check) {");
     return res.send("Please register your account first");
   }
   // Send the OTP via SMS
@@ -427,9 +428,10 @@ const sendOTP = async (req, res, next) => {
         from: "+1 339 300 1794",
         to: phoneNo,
       })
-      .then((message) =>
-        console.log(`OTP sent successfully to the given number`)
-      )
+      .then((message) => {
+        console.log(`OTP sent successfully to the given number`);
+        return res.send("otp has been successfully sent to the give number");
+      })
       .catch((error) => console.error(`Failed to send OTP: ${error}`));
   };
 
@@ -513,6 +515,7 @@ const buyerLogin = async (req, res, next) => {
         if (err) throw err;
         res.json({
           token,
+          userInfo: user,
           // User: userInfo,
           message: "Congratulations! You have been successfully logged in",
         });
