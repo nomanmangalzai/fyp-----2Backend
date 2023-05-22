@@ -141,7 +141,7 @@ const adminAccountManagement = async (req, res, next) => {
   console.log(userId);
   try {
     const { userName, email, password } = req.body;
-    const userUpdateInformation = await User.findByIdAndUpdate(
+    const userUpdateInformation = await adminSchema.findByIdAndUpdate(
       {
         _id: userId,
       },
@@ -152,7 +152,7 @@ const adminAccountManagement = async (req, res, next) => {
       },
       { new: true }
     );
-    const fetchUpdateInformation = await User.findOne({ _id: userId });
+    const fetchUpdateInformation = await adminSchema.findOne({ _id: userId });
     //  let userInfo = await User.find(
     //   { email: email },
     //   { __v: 0, password: 0, _id: 0 }
