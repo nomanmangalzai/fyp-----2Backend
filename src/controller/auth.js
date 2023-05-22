@@ -1,5 +1,6 @@
 // controllers/authController.js
 const User = require("../models/auth");
+const adminSchema = require("../models/adminAuth");
 
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
@@ -34,7 +35,6 @@ const generateOTP = () => {
 
 const login = async (req, res, next) => {
   console.log("signin api has been hit");
-  sendTextMessage();
 
   const errors = validationResult(req);
 
@@ -45,15 +45,18 @@ const login = async (req, res, next) => {
   const { email, password } = req.body;
 
   try {
-    let user = await User.findOne({ email });
+    let user = await adminSchema.findOne({ email });
 
     if (!user) {
+      console.log("if (!user) { called");
       return res.status(400).json({ message: "Invalid Credentials" });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
-
-    if (!isMatch) {
+    // const isMatch = await bcrypt.compare(password, user.password);
+    // if (!isMatch) {
+    //   return res.status(400).json({ message: "Invalid Credentials" });
+    // }
+    if (password != user.password) {
       return res.status(400).json({ message: "Invalid Credentials" });
     }
 
@@ -62,10 +65,7 @@ const login = async (req, res, next) => {
         id: user.id,
       },
     };
-    let userInfo = await User.find(
-      { email: email },
-      { __v: 0, password: 0, _id: 0 }
-    );
+    let userInfo = await adminSchema.find({ email: email });
 
     jwt.sign(payload, secret, { expiresIn: "5 days" }, (err, token) => {
       if (err) throw err;
@@ -82,8 +82,8 @@ const login = async (req, res, next) => {
 };
 
 const signup = async (req, res, next) => {
-  const { firstName, lastName, email, password, confirmPassword } = req.body;
-  console.log(firstName);
+  const { userName, email, password, confirmPassword, registeredAt } = req.body;
+  console.log(userName);
   console.log("signup api has been hit");
   const passwordLength = password.length;
 
@@ -105,7 +105,7 @@ const signup = async (req, res, next) => {
     });
   }
 
-  const userExists = await User.findOne({ email });
+  const userExists = await adminSchema.findOne({ email });
   const isEmailValid = emailValidator.is_email_valid(email);
   if (!isEmailValid) {
     return res
@@ -119,11 +119,11 @@ const signup = async (req, res, next) => {
       .json({ message: "User with this email is already registered." });
   }
 
-  const newUser = new User({
-    firstName: firstName,
-    lastName: lastName,
+  const newUser = new adminSchema({
+    userName: userName,
     email: email,
     password: password,
+    registeredAt: registeredAt,
   });
 
   newUser.save((err, user) => {
