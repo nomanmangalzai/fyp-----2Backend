@@ -432,6 +432,7 @@ const sendOTP = async (req, res, next) => {
       })
       .then((message) => {
         console.log(`OTP sent successfully to the given number`);
+        console.log("otpGenerated " + otp);
         return res.send("otp has been successfully sent to the give number");
       })
       .catch((error) => console.error(`Failed to send OTP: ${error}`));
@@ -449,6 +450,8 @@ const buyerLogin = async (req, res, next) => {
   const { phoneNo, otpByUser } = req.body;
   //below variable will be used for comparison of otps
   const otpAlreadySent = otpStorage[phoneNo];
+  console.log(otpByUser);
+  console.log("otpAlreadySent = " + otpAlreadySent);
 
   const validateOTP = (otpByUser, otpAlreadySent) => {
     return otpByUser === otpAlreadySent;
@@ -492,8 +495,8 @@ const buyerLogin = async (req, res, next) => {
       res.status(500).send("Server error");
     }
   };
-  validateOTP(otpByUser, otpAlreadySend);
-  if (validateOTP === true) {
+  validateOTP(otpByUser, otpAlreadySent);
+  if (validateOTP) {
     sendToken(phoneNo);
   }
 };
@@ -563,7 +566,8 @@ const customerAccountManagement = async (req, res, next) => {
   try {
     // console.log("debug");
 
-    const { firstName, lastName, newEmail, phoneNo, age } = req.body;
+    const { firstName, lastName, newEmail, phoneNo, age, newPassword } =
+      req.body;
     //below picture uploading to cloudinary
     const result = await cloudinary.uploader.upload(req.file.path);
 
@@ -581,20 +585,15 @@ const customerAccountManagement = async (req, res, next) => {
         phoneNo: phoneNo,
         age: age,
         image: result.secure_url,
+        password: newPassword,
       },
       { new: true }
-    ).then(console.log("user information successfully updated"));
-    const fetchUpdateInformation = await User.findOne(
-      { _id: userId },
-      { __v: 0, password: 0, _id: 0 }
     );
-    //  let userInfo = await User.find(
-    //   { email: email },
-    //   { __v: 0, password: 0, _id: 0 }
-    // );
+    const fetchUpdateInformation = await User.findOne({ _id: userId });
+    console.log("code comes here");
     //send response
     return res.status(200).json({
-      url: uploadPictureToCloudinary.secure_url,
+      // url: uploadPictureToCloudinary.secure_url,
       message: "Your account details have been successfully updated",
       status: true,
       data: fetchUpdateInformation,
