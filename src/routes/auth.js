@@ -45,7 +45,7 @@ router.put(
 );
 
 // Below are routes for customer
-router.post("/customer-signup", authController.buyerSignup);
+router.post("/customer-signup", authController.customerSignup);
 router.post("/customer-login", authController.buyerLogin);
 router.post("/customer-send-otp", authController.sendOTP);
 router.put(

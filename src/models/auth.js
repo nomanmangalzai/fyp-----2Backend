@@ -5,7 +5,7 @@ const userSchema = new mongoose.Schema({
   firstName: String,
   lastName: String,
   email: { type: String, unique: true },
-  password: { type: String },
+  // password: { type: String },
   phoneNo: {
     type: String,
     unique: true,
@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema({
     required: [true, "please enter your town street number"],
   },
   houseNo: {
-    type: String,
+    type: Number,
     required: [true, "please enter your house number"],
   },
   age: {

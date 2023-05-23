@@ -180,27 +180,11 @@ const customerSignup = async (req, res, next) => {
   console.log(firstName);
   console.log("signup api has been hit");
   //check password adn confirmPassword
-  if (password != confirmPassword) {
-    return res.status(400).json({
-      message: "Password and confirm password don't match",
-    });
-  }
 
   //check password length
-  const passwordLength = password.length;
-
-  if (passwordLength < 6) {
-    return res.status(400).json({
-      message: "Password is too small ",
-    });
-  }
-  if (passwordLength > 30) {
-    return res.status(400).json({
-      message: "Password is too long ",
-    });
-  }
 
   const userExists = await User.findOne({ phoneNo });
+  const userEmailExists = await User.findOne({ email });
   const isEmailValid = emailValidator.is_email_valid(email);
   if (!isEmailValid) {
     return res
@@ -214,14 +198,21 @@ const customerSignup = async (req, res, next) => {
       .json({ message: "User with this phone number is already registered." });
   }
 
+  //email exists
+  if (userEmailExists) {
+    return res
+      .status(403)
+      .json({ message: "User with this email already exists" });
+  }
+
   const newUser = new User({
     firstName: firstName,
     lastName: lastName,
     email: email,
     phoneNo: phoneNo,
     town: town,
-    streetNo,
-    houseNo,
+    streetNo: streetNo,
+    houseNo: houseNo,
     age: age,
   });
 
@@ -501,53 +492,6 @@ const buyerLogin = async (req, res, next) => {
   }
 };
 
-//buyerSignup
-const buyerSignup = async (req, res, next) => {
-  console.log("buyerSignup API called");
-
-  //signup
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
-  const {
-    firstName,
-    lastName,
-    email,
-    phoneNo,
-    town,
-    streetNo,
-    houseNo,
-    age,
-    otp,
-  } = req.body;
-  console.log(firstName);
-
-  const signUp = (phoneNo, firstName, email, town, streetNo, houseNo) => {
-    console.log("The signup function has been called");
-    const newUser = new User({
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      phoneNo: phoneNo,
-      town: town,
-      streetNo,
-      houseNo,
-      age: age,
-    });
-
-    newUser.save((err, user) => {
-      if (err) return res.status(500).send(err);
-      res.send("User has been successfully registered");
-      registerSendToken(phoneNo);
-    });
-  };
-
-  signUp(phoneNo, firstName, email, town, streetNo, houseNo);
-};
-
 //buyerLogin
 
 const customerAccountManagement = async (req, res, next) => {
@@ -566,8 +510,7 @@ const customerAccountManagement = async (req, res, next) => {
   try {
     // console.log("debug");
 
-    const { firstName, lastName, newEmail, phoneNo, age, newPassword } =
-      req.body;
+    const { firstName, lastName, newEmail, phoneNo, age } = req.body;
     //below picture uploading to cloudinary
     const result = await cloudinary.uploader.upload(req.file.path);
 
@@ -585,7 +528,6 @@ const customerAccountManagement = async (req, res, next) => {
         phoneNo: phoneNo,
         age: age,
         image: result.secure_url,
-        password: newPassword,
       },
       { new: true }
     );
@@ -611,7 +553,6 @@ module.exports = {
   customerSignup,
   customerAccountManagement,
   buyerLogin,
-  buyerSignup,
   sendOTP,
 };
 // const phoneNumber = "+923053078123"; // Replace with the recipient's phone number
