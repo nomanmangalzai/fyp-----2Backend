@@ -22,7 +22,7 @@ cloudinary.config({
 
 //twilio setup
 const accountSid = "ACc2bf951ade890fde04add6a94cf7e33a";
-const authToken = "1a8e771c5f04b8eb9bd38ce678595799";
+const authToken = "9856802d0f330c7005d79d61a4f33f16";
 const client = require("twilio")(accountSid, authToken);
 const generateOTP = () => {
   const digits = "0123456789";
@@ -403,6 +403,10 @@ const customerSignup = async (req, res, next) => {
 //
 
 //below we send otp
+
+//global variable to store otp
+let otpStorage = {};
+
 const sendOTP = async (req, res, next) => {
   const { phoneNo } = req.body;
 
@@ -417,6 +421,9 @@ const sendOTP = async (req, res, next) => {
     console.log("sendOTP() called");
     const otp = generateOTP();
 
+    otpStorage[phoneNo] = otp;
+    // console.log("otpStorage outside =" + otpStorage[phoneNo]);
+
     client.messages
       .create({
         body: `Your OTP is: ${otp}`,
@@ -429,8 +436,66 @@ const sendOTP = async (req, res, next) => {
       })
       .catch((error) => console.error(`Failed to send OTP: ${error}`));
   };
-
+  // const otp = sendOTP(phoneNo);
+  // console.log("otp =" + otpStorage);
+  // const otp =
+  // otpStorage[phoneNo] = otp;
   sendOTP(phoneNo);
+};
+
+//below is buyerLogin
+const buyerLogin = async (req, res, next) => {
+  console.log("buyerLogin API has been called");
+  const { phoneNo, otpByUser } = req.body;
+  //below variable will be used for comparison of otps
+  const otpAlreadySent = otpStorage[phoneNo];
+
+  const validateOTP = (otpByUser, otpAlreadySent) => {
+    return otpByUser === otpAlreadySent;
+  };
+
+  //validateOTP
+  const isOTPValid = validateOTP(otpByUser, otpAlreadySent);
+  if (!isOTPValid) {
+    return res.status(400).json({ message: "Invalid OTP" });
+  }
+
+  //sendToken function
+  const sendToken = async (phoneNo) => {
+    // sendOTP(phoneNo);
+
+    try {
+      let user = await User.findOne({ phoneNo });
+
+      if (!user) {
+        return res.status(400).json({ message: "Invalid Credentials" });
+      }
+
+      const payload = {
+        user: {
+          id: user.id,
+          phoneNo: user.phoneNo,
+        },
+      };
+
+      jwt.sign(payload, secret, { expiresIn: "5 days" }, (err, token) => {
+        if (err) throw err;
+        res.json({
+          token,
+          userInfo: user,
+          // User: userInfo,
+          message: "Congratulations! You have been successfully logged in",
+        });
+      });
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send("Server error");
+    }
+  };
+  validateOTP(otpByUser, otpAlreadySend);
+  if (validateOTP === true) {
+    sendToken(phoneNo);
+  }
 };
 
 //buyerSignup
@@ -481,50 +546,7 @@ const buyerSignup = async (req, res, next) => {
 };
 
 //buyerLogin
-const buyerLogin = async (req, res, next) => {
-  console.log("buyerLogin API has been called");
-  const { phoneNo, otpByUser, otpAlreadySend } = req.body;
 
-  //validate
-  // const validateOTP = (otpByUser, otpAlreadySend) => {
-  //   return userEnteredOTP === otp; //otp is one which we generate and send to the user
-  // };
-  const sendToken = async (phoneNo) => {
-    // sendOTP(phoneNo);
-
-    try {
-      let user = await User.findOne({ phoneNo });
-
-      if (!user) {
-        return res.status(400).json({ message: "Invalid Credentials" });
-      }
-
-      const payload = {
-        user: {
-          id: user.id,
-          phoneNo: user.phoneNo,
-        },
-      };
-
-      jwt.sign(payload, secret, { expiresIn: "5 days" }, (err, token) => {
-        if (err) throw err;
-        res.json({
-          token,
-          userInfo: user,
-          // User: userInfo,
-          message: "Congratulations! You have been successfully logged in",
-        });
-      });
-    } catch (error) {
-      console.error(error.message);
-      res.status(500).send("Server error");
-    }
-  };
-  // validateOTP(otpByUser, otpAlreadySend);
-  // if (validateOTP === true) {
-  sendToken(phoneNo);
-  // }
-};
 const customerAccountManagement = async (req, res, next) => {
   console.log("Customer account management api called");
   //  let deleteId = req.params.id;
