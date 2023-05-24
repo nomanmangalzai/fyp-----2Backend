@@ -175,7 +175,7 @@ const adminAccountManagement = async (req, res, next) => {
 
 //Below are customer APIs
 const customerSignup = async (req, res, next) => {
-  const { firstName, lastName, email, phoneNo, town, streetNo, houseNo, age } =
+  const { firstName, lastName, phoneNo, town, streetNo, houseNo, age } =
     req.body;
   console.log(firstName);
   console.log("signup api has been hit");
@@ -184,31 +184,31 @@ const customerSignup = async (req, res, next) => {
   //check password length
 
   const userExists = await User.findOne({ phoneNo });
-  const userEmailExists = await User.findOne({ email });
-  const isEmailValid = emailValidator.is_email_valid(email);
-  if (!isEmailValid) {
-    return res
-      .status(403)
-      .json({ message: "Please provide a valid email address" });
-  }
-
+  // const userEmailExists = await User.findOne({ email });
+  // const isEmailValid = emailValidator.is_email_valid(email);
+  // if (email) {
+  //   if (!isEmailValid) {
+  //     return res
+  //       .status(403)
+  //       .json({ message: "Please provide a valid email address" });
+  //   }
+  //   //email exists
+  //   if (userEmailExists) {
+  //     return res
+  //       .status(403)
+  //       .json({ message: "User with this email already exists" });
+  //   }
+  // }
   if (userExists) {
     return res
       .status(400)
       .json({ message: "User with this phone number is already registered." });
   }
 
-  //email exists
-  if (userEmailExists) {
-    return res
-      .status(403)
-      .json({ message: "User with this email already exists" });
-  }
-
   const newUser = new User({
     firstName: firstName,
     lastName: lastName,
-    email: email,
+    // email: email,
     phoneNo: phoneNo,
     town: town,
     streetNo: streetNo,
