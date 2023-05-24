@@ -22,7 +22,7 @@ cloudinary.config({
 
 //twilio setup
 const accountSid = "ACc2bf951ade890fde04add6a94cf7e33a";
-const authToken = "9856802d0f330c7005d79d61a4f33f16";
+const authToken = "f7e838665a88d8b8285c8028993427ee";
 const client = require("twilio")(accountSid, authToken);
 const generateOTP = () => {
   const digits = "0123456789";
@@ -399,6 +399,7 @@ const customerSignup = async (req, res, next) => {
 let otpStorage = {};
 
 const sendOTP = async (req, res, next) => {
+  console.log("sendOTP function called");
   const { phoneNo } = req.body;
 
   //check
@@ -426,7 +427,10 @@ const sendOTP = async (req, res, next) => {
         console.log("otpGenerated " + otp);
         return res.send("otp has been successfully sent to the give number");
       })
-      .catch((error) => console.error(`Failed to send OTP: ${error}`));
+      .catch((error) => {
+        console.error(`Failed to send OTP: ${error}`);
+        return res.send("failed to send OTP");
+      });
   };
   // const otp = sendOTP(phoneNo);
   // console.log("otp =" + otpStorage);
