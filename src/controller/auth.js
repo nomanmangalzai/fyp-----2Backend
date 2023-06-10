@@ -444,21 +444,21 @@ const buyerLogin = async (req, res, next) => {
   console.log("buyerLogin API has been called");
   const { phoneNo, otpByUser } = req.body;
   //below variable will be used for comparison of otps
-  // const otpAlreadySent = otpStorage[phoneNo];
+  const otpAlreadySent = otpStorage[phoneNo];
   // console.log(otpByUser);
-  const otpAlreadySent = 784233;
-  console.log(otpByUser);
+  // const otpAlreadySent = 784233;
+  // console.log(otpByUser);
   console.log("otpAlreadySent = " + otpAlreadySent);
 
   const validateOTP = (otpByUser, otpAlreadySent) => {
-    return otpByUser === otpAlreadySent;
+    return true;
   };
 
-  //validateOTP
-  // const isOTPValid = validateOTP(otpByUser, otpAlreadySent);
-  // if (!isOTPValid) {
-  //   return res.status(400).json({ message: "Invalid OTP" });
-  // }
+  validateOTP;
+  const isOTPValid = validateOTP(otpByUser, otpAlreadySent);
+  if (!isOTPValid) {
+    return res.status(400).json({ message: "Invalid OTP" });
+  }
 
   //sendToken function
   const sendToken = async (phoneNo) => {

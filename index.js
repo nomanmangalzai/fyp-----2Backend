@@ -26,6 +26,9 @@ const customerList = require("./src/routes/customerList");
 const reviewList = require("./src/routes/review");
 const transactionList = require("./src/routes/transaction");
 
+//admin reports middleware
+const ordersReport = require("./src/routes/ordersReport");
+
 //Below are files of routes folder for client-side
 const productListing = require("./src/routes/client-side Routes/productListing");
 const shoppingCart = require("./src/routes/client-side Routes/shoppingCart");
@@ -37,6 +40,9 @@ app.use("/orderList", orderListRoute);
 app.use("/customerList", customerList);
 app.use("/reviewList", reviewList);
 app.use("/transactionList", transactionList);
+
+//admin Reports middleware
+app.use("/orders-report", ordersReport);
 
 //Below are middlewares for client-side
 app.use("/client-product-listing", productListing);
