@@ -24,6 +24,7 @@ exports.getOrdersReport = async (req, res, next) => {
 };
 
 //below we have the report generation function
+// Assuming the SalesReport model has the necessary schema and required fields
 
 async function generateSalesReportPDF(res) {
   try {
@@ -33,11 +34,51 @@ async function generateSalesReportPDF(res) {
     // Create a new PDF document
     const doc = new PDFDocument();
 
-    // Pipe the PDF document to a buffer
+    // Add content to the PDF
+    doc
+      .font("Helvetica-Bold")
+      .fontSize(20)
+      .text("Sales Report", { align: "center" })
+      .moveDown(0.5);
+
+    // Loop through salesData and add details to the PDF
+    salesData.forEach((sales) => {
+      doc.font("Helvetica").fontSize(12).text(`Order ID: ${sales.orderID}`);
+      doc
+        .font("Helvetica")
+        .fontSize(12)
+        .text(`Customer Name: ${sales.customerName}`);
+      doc
+        .font("Helvetica")
+        .fontSize(12)
+        .text(`Purchase Date: ${sales.purchaseDate}`);
+      doc
+        .font("Helvetica")
+        .fontSize(12)
+        .text(`Total Amount: ${sales.totalAmount}`);
+      doc
+        .font("Helvetica")
+        .fontSize(12)
+        .text(`Payment Method: ${sales.paymentMethod}`);
+      doc
+        .font("Helvetica")
+        .fontSize(12)
+        .text(`Order Status: ${sales.orderStatus}`);
+      doc
+        .font("Helvetica")
+        .fontSize(12)
+        .text(`Shipping Address: ${sales.shippingAddress}`);
+
+      doc.moveDown(1);
+    });
+
+    // Finalize the PDF document
+    doc.end();
+
+    // Convert the PDF document to a buffer
     const buffers = [];
     doc.on("data", (chunk) => buffers.push(chunk));
     doc.on("end", async () => {
-      // Convert the buffers into a single buffer
       const pdfBuffer = Buffer.concat(buffers);
 
       // Save the sales report in MongoDB
@@ -63,21 +104,6 @@ async function generateSalesReportPDF(res) {
       // Send the sales report as the response
       res.send(pdfBuffer);
     });
-
-    // Add content to the PDF
-    doc
-      .font("Helvetica-Bold")
-      .fontSize(20)
-      .text("Sales Report", { align: "center" })
-      .moveDown(0.5);
-
-    // Loop through salesData and add details to the PDF
-    salesData.forEach((sales) => {
-      // ... rest of the code remains the same ...
-    });
-
-    // Finalize the PDF document
-    doc.end();
 
     console.log("Sales report generated successfully.");
   } catch (error) {
