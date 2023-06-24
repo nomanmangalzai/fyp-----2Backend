@@ -11,10 +11,6 @@ const transactionSchema = mongoose.Schema({
     type: Number,
     required: true,
   },
-  status: {
-    type: String,
-    required: true,
-  },
   oid: {
     type: String,
     // required: true,

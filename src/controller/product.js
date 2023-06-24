@@ -271,13 +271,13 @@ exports.updateProduct = async (req, res, next) => {
   });
 
   console.log(req.body.productTitle);
-  if (checkProduct && checkProduct != req.body.productTitle) {
-    //await ImageModel.deleteMany({ productTitle: "coke" }); //this code is for deleteing
-    // records of database
-    return res.status(403).json({
-      message: "Product with the same name already exists.",
-    });
-  }
+  // if (checkProduct && checkProduct != req.body.productTitle) {
+  //   //await ImageModel.deleteMany({ productTitle: "coke" }); //this code is for deleteing
+  //   // records of database
+  //   return res.status(403).json({
+  //     message: "Product with the same name already exists.",
+  //   });
+  // }
 
   try {
     ImageModel.findOneAndUpdate(
@@ -287,7 +287,7 @@ exports.updateProduct = async (req, res, next) => {
         $set: {
           productTitle: req.body.productTitle,
           color: req.body.color,
-          // sku: req.body.sku,
+          sku: req.body.sku,
           size: req.body.size,
           price: req.body.price,
           status: req.body.status,
