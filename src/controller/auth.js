@@ -21,8 +21,8 @@ cloudinary.config({
 });
 
 //twilio setup
-const accountSid = "ACc2bf951ade890fde04add6a94cf7e33a";
-const authToken = "f7e838665a88d8b8285c8028993427ee";
+const accountSid = "AC4e37b072f05cf2e67c7683c14f505972";
+const authToken = "d6bd118dc8dec941e63fd0e50f794e35";
 const client = require("twilio")(accountSid, authToken);
 const generateOTP = () => {
   const digits = "0123456789";
@@ -419,7 +419,7 @@ const sendOTP = async (req, res, next) => {
     client.messages
       .create({
         body: `Your OTP is: ${otp}`,
-        from: "+1 339 300 1794",
+        from: "+1 361 315 2515",
         to: phoneNo,
       })
       .then((message) => {
@@ -447,11 +447,15 @@ const buyerLogin = async (req, res, next) => {
   const otpAlreadySent = otpStorage[phoneNo];
   // console.log(otpByUser);
   // const otpAlreadySent = 784233;
-  // console.log(otpByUser);
+  console.log(otpByUser);
   console.log("otpAlreadySent = " + otpAlreadySent);
 
   const validateOTP = (otpByUser, otpAlreadySent) => {
-    return true;
+    if (otpByUser === otpAlreadySent) {
+      return true;
+    } else {
+      return false;
+    }
   };
 
   validateOTP;
