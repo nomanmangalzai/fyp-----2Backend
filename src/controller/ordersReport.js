@@ -184,31 +184,46 @@ exports.ordersPerMonth = async (req, res, next) => {
   // API endpoint to get the number of orders placed per month
 
   try {
-    // Group the orders by month using the purchaseDate field
-    const ordersPerMonth = await ordersReportSchema.aggregate([
+    const ordersPerMonth = await orderModel.aggregate([
       {
         $group: {
-          _id: {
-            $month: "$purchaseDate",
-          },
-          count: {
-            $sum: 1,
-          },
+          _id: { $month: "$date" },
+          totalOrders: { $sum: 1 },
         },
       },
+      {
+        $project: {
+          month: {
+            $switch: {
+              branches: [
+                { case: { $eq: ["$_id", 1] }, then: "January" },
+                { case: { $eq: ["$_id", 2] }, then: "February" },
+                { case: { $eq: ["$_id", 3] }, then: "March" },
+                { case: { $eq: ["$_id", 4] }, then: "April" },
+                { case: { $eq: ["$_id", 5] }, then: "May" },
+                { case: { $eq: ["$_id", 6] }, then: "June" },
+                { case: { $eq: ["$_id", 7] }, then: "July" },
+                { case: { $eq: ["$_id", 8] }, then: "August" },
+                { case: { $eq: ["$_id", 9] }, then: "September" },
+                { case: { $eq: ["$_id", 10] }, then: "October" },
+                { case: { $eq: ["$_id", 11] }, then: "November" },
+                { case: { $eq: ["$_id", 12] }, then: "December" },
+              ],
+              default: "Unknown",
+            },
+          },
+          totalOrders: 1,
+        },
+      },
+      { $sort: { _id: 1 } },
     ]);
 
-    // Map the month numbers to month names
-    const response = ordersPerMonth.map((month) => ({
-      month: getMonthName(month._id),
-      orders: month.count,
-    }));
-
-    res.json(response);
+    res.json(ordersPerMonth);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Server error" });
+    res.status(500).json({ error: "An error occurred" });
   }
+
   //
 };
 
