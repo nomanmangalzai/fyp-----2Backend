@@ -15,9 +15,6 @@ const orderShema = mongoose.Schema({
       productImage: String,
     },
   ],
-  shippingCharges: {
-    type: Number,
-  },
 
   customerName: {
     type: String, //   required: true,
@@ -32,7 +29,15 @@ const orderShema = mongoose.Schema({
     type: Number,
     // required: true,
   },
-  customerAddress: {
+  town: {
+    type: String,
+    // require: [true, "product name is required"],
+  },
+  streetNo: {
+    type: String,
+    // require: [true, "product name is required"],
+  },
+  houseNo: {
     type: String,
     // require: [true, "product name is required"],
   },
@@ -53,13 +58,28 @@ const orderShema = mongoose.Schema({
   shippingMethod: {
     type: String, // required: true,
   },
+  paymentMethod: {
+    type: String,
+  },
+  subTotal: {
+    type: Number,
+  },
+  shippingCharges: {
+    type: Number,
+  },
+  shippingCharges: {
+    type: Number,
+  },
+  totalCost: {
+    type: Number,
+  },
+  selectedDate: {
+    type: String,
+  },
   deliveryDate: {
     // when will the order be delivered
     type: String,
     // required: true,
-  },
-  paymentMethod: {
-    type: String,
   },
 });
 module.exports = orderModel = mongoose.model("customersOrders", orderShema);

@@ -5,6 +5,8 @@ const orderSchema = require("../models/order");
 const ordersReportSchema = require("../models/ordersReport");
 const mongoose = require("mongoose");
 
+const ImageModel = require("../models/product");
+
 //below we import PDFDocument library
 const PDFDocument = require("pdfkit");
 const doc = new PDFDocument();
@@ -110,3 +112,67 @@ async function generateSalesReportPDF(res) {
     console.error("Error generating sales report:", error);
   }
 }
+
+exports.stockOutOfStockItems = async (req, res, next) => {
+  try {
+    console.log("stock out of stock API called.");
+
+    const outOfStockCount = await ImageModel.countDocuments({ stock: 0 });
+    const inStockCount = await ImageModel.countDocuments({ stock: { $gt: 0 } });
+
+    res.json({
+      outOfStock: outOfStockCount,
+      inStock: inStockCount,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.ordersPerWeek = async (req, res, next) => {
+  console.log("orderPerWeek API called");
+  //
+  try {
+    // Get the current date
+    const currentDate = new Date();
+
+    // Calculate the date four weeks ago
+    const fourWeeksAgo = new Date();
+    fourWeeksAgo.setDate(fourWeeksAgo.getDate() - 28);
+
+    // Group the orders by week using the purchaseDate field and filter for the last four weeks
+    const ordersPerWeek = await ordersReportSchema.aggregate([
+      {
+        $match: {
+          purchaseDate: {
+            $gte: fourWeeksAgo,
+            $lte: currentDate,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            $week: "$purchaseDate",
+          },
+          count: {
+            $sum: 1,
+          },
+        },
+      },
+    ]);
+
+    // Add week numbers to the JSON response
+    const response = ordersPerWeek.map((week) => ({
+      week: `Week ${week._id}`,
+      orders: week.count,
+    }));
+
+    res.json(response);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+
+  //
+};
