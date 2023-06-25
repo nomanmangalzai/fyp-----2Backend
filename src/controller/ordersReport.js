@@ -176,3 +176,57 @@ exports.ordersPerWeek = async (req, res, next) => {
 
   //
 };
+
+exports.ordersPerMonth = async (req, res, next) => {
+  console.log("orders per month api called");
+
+  //
+  // API endpoint to get the number of orders placed per month
+
+  try {
+    // Group the orders by month using the purchaseDate field
+    const ordersPerMonth = await ordersReportSchema.aggregate([
+      {
+        $group: {
+          _id: {
+            $month: "$purchaseDate",
+          },
+          count: {
+            $sum: 1,
+          },
+        },
+      },
+    ]);
+
+    // Map the month numbers to month names
+    const response = ordersPerMonth.map((month) => ({
+      month: getMonthName(month._id),
+      orders: month.count,
+    }));
+
+    res.json(response);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+  //
+};
+
+//function to get name of month
+function getMonthName(monthNumber) {
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  return monthNames[monthNumber - 1];
+}
