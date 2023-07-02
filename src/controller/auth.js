@@ -22,7 +22,7 @@ cloudinary.config({
 
 //twilio setup
 const accountSid = "AC4e37b072f05cf2e67c7683c14f505972";
-const authToken = "d6bd118dc8dec941e63fd0e50f794e35";
+const authToken = "07aea608400346adcb93c7845ef032ef";
 const client = require("twilio")(accountSid, authToken);
 const generateOTP = () => {
   const digits = "0123456789";
