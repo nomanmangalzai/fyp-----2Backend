@@ -22,7 +22,7 @@ cloudinary.config({
 
 //twilio setup
 const accountSid = "AC4e37b072f05cf2e67c7683c14f505972";
-const authToken = "07aea608400346adcb93c7845ef032ef";
+const authToken = "6abc2b2f213ca1c5a9076a4bcafba037";
 const client = require("twilio")(accountSid, authToken);
 const generateOTP = () => {
   const digits = "0123456789";
@@ -440,34 +440,88 @@ const sendOTP = async (req, res, next) => {
 };
 
 //below is buyerLogin
+// const buyerLogin = async (req, res, next) => {
+//   console.log("buyerLogin API has been called");
+//   const { phoneNo, otpByUser } = req.body;
+//   //below variable will be used for comparison of otps
+//   const otpAlreadySent = otpStorage[phoneNo];
+//   // console.log(otpByUser);
+//   // const otpAlreadySent = 784233;
+//   console.log(otpByUser);
+//   console.log("otpAlreadySent = " + otpAlreadySent);
+
+//   const validateOTP = (otpByUser, otpAlreadySent) => {
+//     if (otpByUser === otpAlreadySent) {
+//       return true;
+//     } else {
+//       return false;
+//     }
+//   };
+
+//   validateOTP;
+//   const isOTPValid = validateOTP(otpByUser, otpAlreadySent);
+//   if (!isOTPValid) {
+//     return res.status(400).json({ message: "Invalid OTP" });
+//   }
+
+//   //sendToken function
+//   const sendToken = async (phoneNo) => {
+//     // sendOTP(phoneNo);
+
+//     try {
+//       let user = await User.findOne({ phoneNo });
+
+//       if (!user) {
+//         return res.status(400).json({ message: "Invalid Credentials" });
+//       }
+
+//       const payload = {
+//         user: {
+//           id: user.id,
+//           phoneNo: user.phoneNo,
+//         },
+//       };
+
+//       jwt.sign(payload, secret, { expiresIn: "5 days" }, (err, token) => {
+//         if (err) throw err;
+//         res.json({
+//           token,
+//           userInfo: user,
+//           // User: userInfo,
+//           message: "Congratulations! You have been successfully logged in",
+//         });
+//       });
+//     } catch (error) {
+//       console.error(error.message);
+//       res.status(500).send("Server error");
+//     }
+//   };
+//   validateOTP(otpByUser, otpAlreadySent);
+//   if (validateOTP) {
+//     sendToken(phoneNo);
+//   }
+// };
+
+//buyerLogin
+//by ali
 const buyerLogin = async (req, res, next) => {
   console.log("buyerLogin API has been called");
   const { phoneNo, otpByUser } = req.body;
-  //below variable will be used for comparison of otps
   const otpAlreadySent = otpStorage[phoneNo];
-  // console.log(otpByUser);
-  // const otpAlreadySent = 784233;
+
   console.log(otpByUser);
   console.log("otpAlreadySent = " + otpAlreadySent);
 
   const validateOTP = (otpByUser, otpAlreadySent) => {
-    if (otpByUser === otpAlreadySent) {
-      return true;
-    } else {
-      return false;
-    }
+    return otpByUser === otpAlreadySent;
   };
 
-  validateOTP;
   const isOTPValid = validateOTP(otpByUser, otpAlreadySent);
   if (!isOTPValid) {
     return res.status(400).json({ message: "Invalid OTP" });
   }
 
-  //sendToken function
   const sendToken = async (phoneNo) => {
-    // sendOTP(phoneNo);
-
     try {
       let user = await User.findOne({ phoneNo });
 
@@ -487,22 +541,19 @@ const buyerLogin = async (req, res, next) => {
         res.json({
           token,
           userInfo: user,
-          // User: userInfo,
           message: "Congratulations! You have been successfully logged in",
         });
       });
     } catch (error) {
       console.error(error.message);
-      res.status(500).send("Server error");
+      res.status(500).send("Server error");
     }
   };
-  validateOTP(otpByUser, otpAlreadySent);
-  if (validateOTP) {
+
+  if (isOTPValid) {
     sendToken(phoneNo);
   }
 };
-
-//buyerLogin
 
 const customerAccountManagement = async (req, res, next) => {
   console.log("Customer account management api called");
