@@ -1,6 +1,42 @@
 const mongoose = require("mongoose");
 
 const orderShema = mongoose.Schema({
+  customerId: {
+    type: String,
+    unique: true,
+  },
+  customerFirstName: {
+    type: String, //   required: true,
+    //type: mongoose.Schema.Types.ObjectId,
+    //ref: "orderItem"
+  },
+  customerFirstName: {
+    type: String, //   required: true,
+    //type: mongoose.Schema.Types.ObjectId,
+    //ref: "orderItem"
+  },
+  phoneNo: {
+    type: String,
+    //  required: true,
+  },
+  town: {
+    type: String,
+    // require: [true, "product name is required"],
+  },
+  streetNo: {
+    type: String,
+    // require: [true, "product name is required"],
+  },
+  houseNo: {
+    type: String,
+    // require: [true, "product name is required"],
+  },
+  shippingMethod: {
+    type: String, // required: true,
+  },
+  paymentMethod: {
+    type: String,
+  },
   orderId: {
     type: String,
     unique: true,
@@ -15,71 +51,35 @@ const orderShema = mongoose.Schema({
       productImage: String,
     },
   ],
-
-  customerName: {
-    type: String, //   required: true,
-    //type: mongoose.Schema.Types.ObjectId,
-    //ref: "orderItem"
-  },
-  phoneNo: {
+  additionalComments: {
     type: String,
-    //  required: true,
   },
-  totalPrice: {
-    type: Number,
-    // required: true,
-  },
-  town: {
-    type: String,
-    // require: [true, "product name is required"],
-  },
-  streetNo: {
-    type: String,
-    // require: [true, "product name is required"],
-  },
-  houseNo: {
-    type: String,
-    // require: [true, "product name is required"],
-  },
-  status: {
-    type: String,
-    default: ["pending"],
-    //  required: true,
-  },
-  date: {
+  orderDate: {
     //when user places order
     type: Date,
     default: Date.now,
     // required: true,
   },
-  additionalComments: {
-    type: String,
-  },
-  shippingMethod: {
-    type: String, // required: true,
-  },
-  paymentMethod: {
-    type: String,
-  },
-  subTotal: {
-    type: Number,
-  },
-  shippingCharges: {
-    type: Number,
-  },
-  shippingCharges: {
-    type: Number,
-  },
-  totalCost: {
-    type: Number,
-  },
-  selectedDate: {
-    type: String,
-  },
   deliveryDate: {
     // when will the order be delivered
     type: String,
     // required: true,
+  },
+
+  subTotal: {
+    type: Number,
+  },
+  shippingCost: {
+    type: Number,
+  },
+  totalPrice: {
+    type: Number,
+    // required: true,
+  },
+  status: {
+    type: String,
+    default: ["pending"],
+    //  required: true,
   },
 });
 module.exports = orderModel = mongoose.model("customersOrders", orderShema);

@@ -79,6 +79,7 @@ exports.testPostProduct = async (req, res, next) => {
 
 exports.postProduct = async (req, res, next) => {
   console.log("The uploadProduct API has been called.");
+
   const {
     productTitle,
     sku,

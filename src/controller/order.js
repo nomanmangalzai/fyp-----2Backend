@@ -7,17 +7,27 @@ const ImageModel = require("../models/product");
 exports.postOrder = async (req, res, next) => {
   console.log("Congrats! The postOrder API has been hit.");
   const {
-    orderId,
-    orderItems,
-    customerName,
+    customerId,
+    firstName,
+    lastName,
     phoneNo,
-    totalPrice,
-    status,
-    date,
-    additionalComments,
+    town,
+    streetNo,
+    houseNo,
     shippingMethod,
+    paymentMethod,
+    orderItems,
+    additionalComments,
+    orderDate, // Date of mongodb
+    deliveryDate,
+    subTotal,
+    shippingCost,
+    totalPrice,
+    orderId,
+    status, // should be pending from backend
   } = req.body;
-  // console.log(orderId);
+
+  console.log(orderId);
   console.log(status);
   console.log(orderItems[0].productId);
   let products = [];
@@ -95,15 +105,24 @@ exports.postOrder = async (req, res, next) => {
   }
 
   const order = new orderSchema({
-    orderId: orderId,
-    orderItems: orderItems,
-    customerName: customerName,
-    phoneNo: phoneNo,
-    totalPrice: totalPrice,
-    status: status,
-    date: date,
-    additionalComments: additionalComments,
-    shippingMethod: shippingMethod,
+    customerId,
+    firstName,
+    lastName,
+    phoneNo,
+    town,
+    streetNo,
+    houseNo,
+    shippingMethod,
+    paymentMethod,
+    orderItems,
+    additionalComments,
+    orderDate, // Date of mongodb
+    deliveryDate,
+    subTotal,
+    shippingCost,
+    totalPrice,
+    orderId,
+    status, // should be pending from backend
   });
 
   //save the record ="order" in database
