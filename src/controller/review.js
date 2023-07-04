@@ -8,15 +8,8 @@ const verifyToken = require("./verifyToken");
 exports.postReview = async (req, res, next) => {
   console.log("The post Review API has been called.");
 
-  const {
-    productName,
-    customerName,
-    email,
-    rating,
-    reviewTitle,
-    reviewMessage,
-    date,
-  } = req.body;
+  const { productId, productTitle, rating, name, phoneNumber, reviewText } =
+    req.body;
 
   const idOfReview = req.body.reviewId;
   console.log(rating);
@@ -35,13 +28,12 @@ exports.postReview = async (req, res, next) => {
 
   //   if ((customerId && productName && customerName && Rating && Date) === null) {
   const newReview = new review({
-    productName: productName,
-    customerName: customerName,
-    email: email,
+    productId: productId,
+    productName: productTitle,
+    customerName: name,
     rating: rating,
-    reviewTitle: reviewTitle,
-    reviewMessage: reviewMessage,
-    date: date,
+    reviewMessage: reviewText,
+    phoneNumber: phoneNumber,
   });
   console.log(newReview);
   //below is saving
