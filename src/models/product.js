@@ -14,7 +14,7 @@ const ImageSchema = mongoose.Schema({
   },
   color: {
     type: String,
-    required: true,
+    // required: true,
   },
   size: {
     type: String,
@@ -30,11 +30,11 @@ const ImageSchema = mongoose.Schema({
   },
   tag: {
     type: String,
-    required: true,
+    // required: true,
   },
   description: {
     type: String,
-    required: true,
+    // required: true,
   },
   stock: {
     type: Number,
@@ -57,7 +57,7 @@ const ImageSchema = mongoose.Schema({
   },
   subcategory: {
     type: String,
-    required: true,
+    // required: true,
   },
   image: {
     type: String,

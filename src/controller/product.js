@@ -23,6 +23,7 @@ cloudinary.config({
 
 // function to save product details with image as url
 exports.testPostProduct = async (req, res, next) => {
+  console.log("The testPostProduct API has been hit.");
   // ImageModel.deleteMany();
   //active and unactive
 

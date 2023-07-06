@@ -2,6 +2,9 @@ const express = require("express");
 const res = require("express/lib/response");
 const transaction = require("../models/transaction");
 
+//
+const orderSchema = require("../models/order");
+
 exports.postTransaction = async (req, res, next) => {
   console.log("THE POSTtRANSACTION API HAS BEEN HIT.");
   // console.log(req.body);
@@ -42,10 +45,16 @@ exports.viewTransaction = async (req, res, next) => {
   console.log("VIEW TRANSACTIONS API HAS BEEN HIT.  ");
   try {
     // const transactions = await transaction.find();
-    const transactions = await transaction.find({}, { __v: 0 });
+    const transactions = await orderSchema.find(
+      { status: "Delivered" },
+      { __v: 0 }
+    );
 
-    console.log(transactions.customerName);
-    res.json(transactions);
+    console.log(transactions);
+    // res.json(transactions.length);
+    res.send(
+      "No of stransactions = " + transactions.length + "\n" + transactions
+    );
   } catch (error) {
     console.log(error.message);
   }
